@@ -4,9 +4,6 @@
 #  yum:
 #    name: unzip-6.0-20.el7.x86_64
 #    state: present
-#- name: Display debug information
-#  debug:
-#    msg: unzip 6.0 installed successfully.
 
 # CentOS 7 InitScripts
 - name: Add CentOS 7 InitScripts repository
@@ -22,9 +19,6 @@
   yum:
     name: initscripts-9.49.47-1.el7.x86_64
     state: present
-- name: Display debug information
-  debug:
-    msg: centos 7 initscripts installed successfully.
 
 ## Docker
 #- name: Add Docker repository
@@ -40,9 +34,6 @@
 #  yum:
 #    name: docker-ce-18.09.9-3.el7.x86_64
 #    state: present
-#- name: Display debug information
-#  debug:
-#    msg: docker 18.09.9 installed successfully.
 
 ## Kubectl
 #- name: Add Kubernetes repository
@@ -58,9 +49,6 @@
 #  yum:
 #    name: kubectl-1.10.3-0.x86_64 
 #    state: present
-#- name: Display debug information
-#  debug:
-#    msg: kubectl 1.10.3 installed successfully.
 
 ## Helm
 #- name: Create temporal folder
@@ -77,9 +65,6 @@
 #  command:
 #    cmd: cp /tmp/aws-devops/helm/linux-amd64/helm /usr/local/bin/helm
 #    creates: /usr/local/bin/helm
-#- name: Display debug information
-#  debug:
-#    msg: helm 2.7.2 installed successfully.
 
 ## Terraform
 #- name: Create temporal folder
@@ -96,9 +81,6 @@
 #  command:
 #    cmd: cp /tmp/aws-devops/terraform/terraform /usr/local/bin/terraform
 #    creates: /usr/local/bin/terraform
-#- name: Display debug information
-#  debug:
-#    msg: terraform 0.12.20 installed successfully.
 
 ## AWS
 #- name: Download AWS binary
@@ -111,9 +93,6 @@
 #  command:
 #    cmd: /root/aws/install
 #    creates: /root/.aws
-#- name: Display debug information
-#  debug:
-#    msg: aws cli 2.0 installed successfully.
 
 # Jenkins
 - name: Removing java 1.7.0
@@ -137,11 +116,13 @@
   yum:
     name: jenkins-2.220-1.1.noarch
     state: present
+- name: Change Jenkins JAVA options
+  lineinfile:
+    dest: /etc/sysconfig/jenkins
+    regexp: ^JENKINS_JAVA_OPTIONS=
+    line: JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
 - name: Start Jenkins
   service:
     name: jenkins
     enabled: yes
     state: started
-- name: Display debug information
-  debug:
-    msg: jenkins 2.220 installed successfully.
