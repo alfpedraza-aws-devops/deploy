@@ -43,9 +43,10 @@
     name: containerd.io-1.2.6-3.3.el7.x86_64
     state: present
 - name: Start Docker
-  systemd:
+  service:
+    name: docker.io
+    enabled: yes
     state: started
-    name: docker
 
 # Kubectl
 - name: Add Kubernetes repository
