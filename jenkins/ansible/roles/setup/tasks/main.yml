@@ -46,6 +46,10 @@
 #    creates: /usr/local/bin/helm
 
 # AWS
+- name: Create installation folder
+  command:
+    cmd: mkdir -p /root/aws
+    creates: /root/.aws
 - name: Download AWS binary
   unarchive:
     src: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
