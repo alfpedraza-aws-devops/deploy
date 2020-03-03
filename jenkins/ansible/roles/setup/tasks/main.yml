@@ -3,6 +3,7 @@
 - name: Add Docker repository
   yum_repository:
     name: docker_repo
+    description: Docker Package Repository
     baseurl: https://download.docker.com/linux/centos/docker-ce.repo
 - name: Import Docker GPG key 
   rpm_key:  
