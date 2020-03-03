@@ -1,4 +1,6 @@
-localhost:
-  vars:
-    ansible_connection: local
-    ansible_python_interpreter: /usr/bin/python2.7
+all:
+  hosts:
+    localhost:
+      vars:
+        ansible_connection: local
+        ansible_python_interpreter: /usr/bin/python2.7
