@@ -1,6 +1,6 @@
 ---
 - name: Print helloworld
-  shell: echo 'Hello World 12345!'
+  shell: touch /helloworld.txt
 
 #- name: Install Docker 
 #  yum:
