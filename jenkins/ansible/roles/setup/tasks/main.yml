@@ -8,6 +8,24 @@
 #  debug:
 #    msg: unzip 6.0 installed successfully.
 
+# CentOS 7 InitScripts
+- name: Add CentOS 7 InitScripts repository
+  yum_repository:
+    name: initscripts_repo
+    description: CentOS 7 InitScripts Package Repository
+    baseurl: http://mirror.centos.org/centos/7/os/x86_64/
+- name: Import CentOS 7 InitScritps GPG key 
+  rpm_key:  
+    state: present 
+    key: http://mirror.centos.org/centos/7/os/x86_64/RPM-GPG-KEY-CentOS-7
+- name: Install CentOS 7 InitScritps
+  yum:
+    name: initscripts-9.49.47-1.el7.x86_64
+    state: present
+- name: Display debug information
+  debug:
+    msg: centos 7 initscripts installed successfully.
+
 ## Docker
 #- name: Add Docker repository
 #  yum_repository:
@@ -98,28 +116,32 @@
 #    msg: aws cli 2.0 installed successfully.
 
 # Jenkins
-- name: Install java 1.8.0
-  yum:
-    name: java-1.8.0-openjdk
-    state: present
-- name: Add Jenkins repository
-  yum_repository:
-    name: jenkins_repo
-    description: Jenkins Package Repository
-    baseurl: https://pkg.jenkins.io/redhat/
-- name: Import Jenkins GPG key
-  rpm_key:
-    state: present
-    key: https://pkg.jenkins.io/redhat/jenkins.io.key
-- name: Install Jenkins
-  yum:
-    name: jenkins-2.220-1.1.noarch
-    state: present
-- name: Start Jenkins
-  service:
-    name: jenkins
-    enabled: yes
-    state: started
-- name: Display debug information
-  debug:
-    msg: jenkins 2.220 installed successfully.
+#- name: Removing java 1.7.0
+#  yum:
+#    name: java-1.7.0-openjdk
+#    state: absent
+#- name: Install java 1.8.0
+#  yum:
+#    name: java-1.8.0-openjdk
+#    state: present
+#- name: Add Jenkins repository
+#  yum_repository:
+#    name: jenkins_repo
+#    description: Jenkins Package Repository
+#    baseurl: https://pkg.jenkins.io/redhat/
+#- name: Import Jenkins GPG key
+#  rpm_key:
+#    state: present
+#    key: https://pkg.jenkins.io/redhat/jenkins.io.key
+#- name: Install Jenkins
+#  yum:
+#    name: jenkins-2.220-1.1.noarch
+#    state: present
+#- name: Start Jenkins
+#  service:
+#    name: jenkins
+#    enabled: yes
+#    state: started
+#- name: Display debug information
+#  debug:
+#    msg: jenkins 2.220 installed successfully.
