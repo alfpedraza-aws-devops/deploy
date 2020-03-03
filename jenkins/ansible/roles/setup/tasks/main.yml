@@ -1,19 +1,35 @@
 ---
-# Git
-- name: Add Docker repository
+## Git
+#- name: Add Docker repository
+#  yum_repository:
+#    name: docker_repo
+#    description: Docker Package Repository
+#    baseurl: https://download.docker.com/linux/centos/7/x86_64/stable/
+#- name: Import Docker GPG key 
+#  rpm_key:  
+#    state: present 
+#    key: https://download.docker.com/linux/centos/gpg
+#- name: Install Docker 
+#  yum:
+#    name: docker-ce-18.09.9-3.el7.x86_64
+#    state: present
+
+# Kubectl
+- name: Add Kubernetes repository
   yum_repository:
-    name: docker_repo
-    description: Docker Package Repository
-    baseurl: https://download.docker.com/linux/centos/7/x86_64/stable/
-- name: Import Docker GPG key 
-  rpm_key:  
-    state: present 
-    key: https://download.docker.com/linux/centos/gpg
-- name: Install Docker 
-  yum:
-    name: docker-ce-18.09.9-3.el7.x86_64
+    name: kubernetes_repo
+    description: Kubernetes Package Repository
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64/
+- name: Import Kubernetes GPG key
+  rpm_key:
     state: present
-#
+    key: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+- name: Install Kubectl
+  yum:
+    name: kubectl-1.10.3-00
+    state: present
+
+
 #- name: Install Kubectl 
 #  yum:
 #    name: kubectl 1.10.13
