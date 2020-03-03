@@ -26,7 +26,7 @@
     key: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 - name: Install Kubectl
   yum:
-    name: kubectl.x86_64-1.10.3-0
+    name: kubectl.x86_64.1.10.3-0
     state: present
 
 
