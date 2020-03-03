@@ -1,12 +1,12 @@
 ---
 ## Unzip
-- name: Download unzip 6.0
-  yum:
-    name: unzip-6.0-20.el7.x86_64
-    state: present
-- name: Display debug information
-  debug:
-    msg: unzip 6.0 installed successfully.
+#- name: Download unzip 6.0
+#  yum:
+#    name: unzip-6.0-20.el7.x86_64
+#    state: present
+#- name: Display debug information
+#  debug:
+#    msg: unzip 6.0 installed successfully.
 
 ## Docker
 #- name: Add Docker repository
@@ -98,28 +98,28 @@
 #    msg: aws cli 2.0 installed successfully.
 
 # Jenkins
-#- name: Install java 1.8.0
-#  yum:
-#    name: java-1.8.0-openjdk
-#    state: present
-#- name: Add Jenkins repository
-#  yum_repository:
-#    name: jenkins_repo
-#    description: Jenkins Package Repository
-#    baseurl: https://pkg.jenkins.io/redhat/
-#- name: Import Jenkins GPG key
-#  rpm_key:
-#    state: present
-#    key: https://pkg.jenkins.io/redhat/jenkins.io.key
-#- name: Install Jenkins
-#  yum:
-#    name: jenkins-2.220-1.1.noarch
-#    state: present
-#- name: Start Jenkins
-#  service:
-#    name: jenkins
-#    enabled: yes
-#    state: started
-#- name: Display debug information
-#  debug:
-#    msg: jenkins 2.220 installed successfully.
+- name: Install java 1.8.0
+  yum:
+    name: java-1.8.0-openjdk
+    state: present
+- name: Add Jenkins repository
+  yum_repository:
+    name: jenkins_repo
+    description: Jenkins Package Repository
+    baseurl: https://pkg.jenkins.io/redhat/
+- name: Import Jenkins GPG key
+  rpm_key:
+    state: present
+    key: https://pkg.jenkins.io/redhat/jenkins.io.key
+- name: Install Jenkins
+  yum:
+    name: jenkins-2.220-1.1.noarch
+    state: present
+- name: Start Jenkins
+  service:
+    name: jenkins
+    enabled: yes
+    state: started
+- name: Display debug information
+  debug:
+    msg: jenkins 2.220 installed successfully.
