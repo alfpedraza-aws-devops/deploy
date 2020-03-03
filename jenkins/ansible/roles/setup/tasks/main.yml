@@ -73,7 +73,7 @@
     state: directory
 - name: Download helm binary
   unarchive:
-    src: https://releases.hashicorp.com/terraform/0.12.21/terraform_0.12.21_freebsd_amd64.zip
+    src: https://releases.hashicorp.com/terraform/0.12.20/terraform_0.12.20_linux_amd64.zip
     dest: /tmp/aws-devops/terraform
     creates: /usr/local/bin/terraform
     remote_src: yes
