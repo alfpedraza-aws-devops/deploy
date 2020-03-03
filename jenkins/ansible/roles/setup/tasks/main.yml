@@ -23,7 +23,7 @@
 - name: Import Kubernetes GPG key
   rpm_key:
     state: present
-    key: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    key: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 - name: Install Kubectl
   yum:
     name: kubectl-1.10.3-00
