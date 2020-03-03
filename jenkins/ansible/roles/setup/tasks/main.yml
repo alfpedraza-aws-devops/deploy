@@ -144,4 +144,4 @@
     port: 8080
 - name: Install plugin
   jenkins_plugin:
-    name: build-pipeline-plugin
+    name: pipeline
