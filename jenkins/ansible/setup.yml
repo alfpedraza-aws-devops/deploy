@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: localhost2
   become: yes
   roles:
   - setup
