@@ -15,26 +15,32 @@
 #    state: present
 
 # Kubectl
-- name: Add Kubernetes repository
-  yum_repository:
-    name: kubernetes_repo
-    description: Kubernetes Package Repository
-    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64/
-- name: Import Kubernetes GPG key
-  rpm_key:
-    state: present
-    key: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-- name: Install Kubectl
-  yum:
-    name: kubectl-1.10.3-0.x86_64 
-    state: present
-
-
-#- name: Install Kubectl 
-#  yum:
-#    name: kubectl 1.10.13
+#- name: Add Kubernetes repository
+#  yum_repository:
+#    name: kubernetes_repo
+#    description: Kubernetes Package Repository
+#    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64/
+#- name: Import Kubernetes GPG key
+#  rpm_key:
 #    state: present
-#
+#    key: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+#- name: Install Kubectl
+#  yum:
+#    name: kubectl-1.10.3-0.x86_64 
+#    state: present
+
+# Helm
+- name: Download helm binary
+  unarchive:
+    src: https://get.helm.sh/helm-v2.7.2-linux-amd64.tar.gz
+    dest: /tmp/aws-devops
+    creates: /usr/local/bin/helm
+    remote_src: yes
+- name: Move helm binary into place.
+  command:
+    cmd: cp /tmp/aws-devops/linux-amd64/helm /usr/local/bin/helm
+    creates: /usr/local/bin/helm
+
 #- name: Install Helm
 #  yum:
 #    name: helm  2.7.2
