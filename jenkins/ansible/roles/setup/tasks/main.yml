@@ -30,10 +30,23 @@
   rpm_key:  
     state: present 
     key: https://download.docker.com/linux/centos/gpg
-- name: Install Docker 
+- name: Install Docker Daemon
   yum:
     name: docker-ce-18.09.7-3.el7.x86_64
     state: present
+- name: Install Docker CLI
+  yum:
+    name: docker-ce-cli-18.09.7-3.el7.x86_64
+    state: present
+- name: Install Docker Containerd
+  yum:
+    name: containerd.io-1.2.6-3.3.el7.x86_64
+    state: present
+- name: Start Docker
+  service:
+    name: docker
+    enabled: yes
+    state: started
 
 # Kubectl
 - name: Add Kubernetes repository
