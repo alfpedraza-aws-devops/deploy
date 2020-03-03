@@ -134,11 +134,14 @@
     dest: /etc/sysconfig/jenkins
     regexp: ^JENKINS_JAVA_OPTIONS=
     line: JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
-- name: Install plugin
-  jenkins_plugin:
-    name: build-pipeline-plugin
 - name: Start Jenkins
   service:
     name: jenkins
     enabled: yes
     state: started
+- name: Wait for Jenkins to become available
+  wait_for:
+    port: 8080
+- name: Install plugin
+  jenkins_plugin:
+    name: build-pipeline-plugin
