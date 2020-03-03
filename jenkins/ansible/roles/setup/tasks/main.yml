@@ -30,25 +30,33 @@
 #    state: present
 
 # Helm
-- name: Create temporal folder
-  command:
-    cmd: mkdir -p /tmp/aws-devops/helm
-    creates: /usr/local/bin/helm
-- name: Download helm binary
-  unarchive:
-    src: https://get.helm.sh/helm-v2.7.2-linux-amd64.tar.gz
-    dest: /tmp/aws-devops/helm
-    creates: /usr/local/bin/helm
-    remote_src: yes
-- name: Move helm binary into place.
-  command:
-    cmd: cp /tmp/aws-devops/helm/linux-amd64/helm /usr/local/bin/helm
-    creates: /usr/local/bin/helm
+#- name: Create temporal folder
+#  command:
+#    cmd: mkdir -p /tmp/aws-devops/helm
+#    creates: /usr/local/bin/helm
+#- name: Download helm binary
+#  unarchive:
+#    src: https://get.helm.sh/helm-v2.7.2-linux-amd64.tar.gz
+#    dest: /tmp/aws-devops/helm
+#    creates: /usr/local/bin/helm
+#    remote_src: yes
+#- name: Move helm binary into place.
+#  command:
+#    cmd: cp /tmp/aws-devops/helm/linux-amd64/helm /usr/local/bin/helm
+#    creates: /usr/local/bin/helm
 
-#- name: Install Helm
-#  yum:
-#    name: helm  2.7.2
-#    state: present
+# AWS
+- name: Download AWS binary
+  unarchive:
+    src: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    dest: /root/aws
+    creates: /root/.aws
+    remote_src: yes
+- name: Executes the AWS installer.
+  command:
+    cmd: /root/aws/install
+    creates: /root/.aws
+
 #
 #- name: Install Terraform
 #  yum:
