@@ -43,10 +43,9 @@
     name: containerd.io-1.2.6-3.3.el7.x86_64
     state: present
 - name: Start Docker
-  service:
-    name: docker
-    enabled: yes
+  systemd:
     state: started
+    name: docker
 
 # Kubectl
 - name: Add Kubernetes repository
@@ -108,34 +107,34 @@
     creates: /root/.aws
 
 # Jenkins
-#- name: Removing java 1.7.0
-#  yum:
-#    name: java-1.7.0-openjdk
-#    state: absent
-#- name: Install java 1.8.0
-#  yum:
-#    name: java-1.8.0-openjdk
-#    state: present
-#- name: Add Jenkins repository
-#  yum_repository:
-#    name: jenkins_repo
-#    description: Jenkins Package Repository
-#    baseurl: https://pkg.jenkins.io/redhat/
-#- name: Import Jenkins GPG key
-#  rpm_key:
-#    state: present
-#    key: https://pkg.jenkins.io/redhat/jenkins.io.key
-#- name: Install Jenkins
-#  yum:
-#    name: jenkins-2.220-1.1.noarch
-#    state: present
-#- name: Change Jenkins JAVA options
-#  lineinfile:
-#    dest: /etc/sysconfig/jenkins
-#    regexp: ^JENKINS_JAVA_OPTIONS=
-#    line: JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
-#- name: Start Jenkins
-#  service:
-#    name: jenkins
-#    enabled: yes
-#    state: started
+- name: Removing java 1.7.0
+  yum:
+    name: java-1.7.0-openjdk
+    state: absent
+- name: Install java 1.8.0
+  yum:
+    name: java-1.8.0-openjdk
+    state: present
+- name: Add Jenkins repository
+  yum_repository:
+    name: jenkins_repo
+    description: Jenkins Package Repository
+    baseurl: https://pkg.jenkins.io/redhat/
+- name: Import Jenkins GPG key
+  rpm_key:
+    state: present
+    key: https://pkg.jenkins.io/redhat/jenkins.io.key
+- name: Install Jenkins
+  yum:
+    name: jenkins-2.220-1.1.noarch
+    state: present
+- name: Change Jenkins JAVA options
+  lineinfile:
+    dest: /etc/sysconfig/jenkins
+    regexp: ^JENKINS_JAVA_OPTIONS=
+    line: JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
+- name: Start Jenkins
+  service:
+    name: jenkins
+    enabled: yes
+    state: started
