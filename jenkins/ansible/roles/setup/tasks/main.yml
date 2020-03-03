@@ -1,0 +1,33 @@
+---
+- name: Print helloworld
+  shell: echo 'Hello World 12345!'
+
+#- name: Install Docker 
+#  yum:
+#    name: docker   18.09.7
+#    state: present
+#
+#- name: Install Kubectl 
+#  yum:
+#    name: kubectl 1.10.13
+#    state: present
+#
+#- name: Install Helm
+#  yum:
+#    name: helm  2.7.2
+#    state: present
+#
+#- name: Install Terraform
+#  yum:
+#    name: terraform 0.12.20
+#    state: present
+#
+#- name: Install AWS
+#  yum:
+#    name: aws aws-cli/2.0.0 Python/3.7.3 Linux/5.0.0-1032-azure botocore/2.0.0dev4 
+#    state: present
+#
+#- name: Install Jenkins
+#  yum:
+#    name: jenkins jenkins-2.220-1.1
+#    state: present
