@@ -12,4 +12,4 @@ yum install -y git-2.18.0-1.WANdisco.402.x86_64
 
 # Run the setup.yml Playbook to install all the required tools. 
 ansible-pull -U https://github.com/alfpedraza-aws-devops/deployment.git jenkins/ansible/setup.yml
-echo "Sucess!"
+echo "Success!"

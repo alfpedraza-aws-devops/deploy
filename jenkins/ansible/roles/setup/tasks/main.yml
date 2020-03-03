@@ -1,11 +1,17 @@
 ---
-- name: Print helloworld
-  shell: touch /helloworld.txt
-
-#- name: Install Docker 
-#  yum:
-#    name: docker   18.09.7
-#    state: present
+# Git
+- name: Add Docker repository
+  yum_repository:
+    name: docker_repo
+    baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+- name: Import Docker GPG key 
+  rpm_key:  
+    state: present 
+    key: https://download.docker.com/linux/centos/gpg
+- name: Install Docker 
+  yum:
+    name: docker-ce-18.09.9-3.el7.x86_64
+    state: present
 #
 #- name: Install Kubectl 
 #  yum:
