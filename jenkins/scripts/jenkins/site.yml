@@ -11,4 +11,5 @@
  # - initscripts
  # - jenkins
   - plugins
+  - job
   - security
