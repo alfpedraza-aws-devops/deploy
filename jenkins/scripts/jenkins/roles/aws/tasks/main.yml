@@ -6,9 +6,9 @@
     src: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
     dest: /root
     remote_src: yes
-    creates: /root/.aws
+    creates: /usr/local/bin/aws
 
 - name: Execute the AWS installer
   command:
     cmd: /root/aws/install
-    creates: /root/.aws
+    creates: /usr/local/bin/aws
