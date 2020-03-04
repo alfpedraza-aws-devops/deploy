@@ -8,8 +8,10 @@
  # - helm
  # - terraform
  # - aws
+
  # - initscripts
  # - jenkins
   - plugins
   - job
   - security
+  - build

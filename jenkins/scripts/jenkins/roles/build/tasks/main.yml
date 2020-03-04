@@ -1,0 +1,4 @@
+---
+
+- name: Build a job
+  command: curl -X POST http://admin:P4zzw0rd.LJEAS#!@localhost:8080/job/aws-devops/build
