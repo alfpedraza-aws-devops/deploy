@@ -1,51 +1,144 @@
 ---
-# Install the admin user
+# Install the git and pipeline Jenkins plugins
 
-- name: Copy the config.xml file to the jenkins folder
-  copy:
-    src: "config.xml"
-    dest: "~jenkins/config.xml"
-  register: jenkins_config_change
-
-- name: Create a Jenkins admin password hash
-  shell: echo -n "{{ jenkins_admin_password }}{ansible_jenkins}" | sha256sum - | awk '{ print $1; }'
-  register: jenkins_password_hash
-
-- name: Create the admin user directory
-  file:
-    path: "~jenkins/users/admin"
-    owner: jenkins
-    group: jenkins
-    mode: "0755"
-    recurse: yes
-    state: directory
-
-- name: Create the admin user configuration file
-  template:
-    src: "admin-config.xml.j2"
-    dest: "~jenkins/users/admin/config.xml"
-    force: no
-  register: jenkins_admin_config
-
-- name: Restart jenkins if necessary
+- name: Start the Jenkins service
   service:
     name: jenkins
-    state: restarted
-  when: jenkins_config_change.changed or jenkins_admin_config.changed
+    enabled: yes
+    state: started
 
 - name: Wait for Jenkins to become available
   wait_for:
     port: 8080
 
+- name: wait for 1 minute
+  wait_for:
+    timeout: 60
+
+- name: Install the pipeline Jenkins plugin
+  jenkins_plugin:
+     name: git
+
+- name: Install the git Jenkins plugin
+  jenkins_plugin:
+    name: job-dsl
+
+- name: Install the git Jenkins plugin
+  jenkins_plugin:
+    name: workflow-aggregator
+
+- name: Install the git Jenkins plugin
+  jenkins_plugin:
+    name: workflow-cps
 
 
 
-# Install the git and pipeline Jenkins plugins
 
-# - name: Install the pipeline Jenkins plugin
-#   jenkins_plugin:
-#     name: pipeline
 
-# - name: Install the git Jenkins plugin
-#   jenkins_plugin:
-#     name: git
+
+
+## Setup the Jenkins authorizationStrategy and securityRealm properties
+## Then setup an admin user and password
+#
+#- name: Copy the config.xml file to the jenkins folder
+#  copy:
+#    src: "config.xml"
+#    dest: "~jenkins/config.xml"
+#  register: jenkins_config_change
+#
+#- name: Create a Jenkins admin password hash
+#  shell: echo -n "{{ jenkins_admin_password }}{ansible_jenkins}" | sha256sum - | awk '{ print $1; }'
+#  register: jenkins_password_hash
+#
+#- name: Create the admin user directory
+#  file:
+#    path: "~jenkins/users/admin"
+#    owner: jenkins
+#    group: jenkins
+#    mode: "0755"
+#    recurse: yes
+#    state: directory
+#
+#- name: Create the admin user configuration file
+#  template:
+#    src: "admin-config.xml.j2"
+#    dest: "~jenkins/users/admin/config.xml"
+#    force: no
+#  register: jenkins_admin_config
+#
+#- name: Restart jenkins if necessary
+#  service:
+#    name: jenkins
+#    state: restarted
+#  when: jenkins_config_change.changed or jenkins_admin_config.changed
+#
+#- name: Wait for Jenkins to become available
+#  wait_for:
+#    port: 8080
+
+## Install the plugins
+#- name: Get Jenkins crumb
+#  uri:
+#    user: admin
+#    password: "{{ jenkins_admin_password }}"
+#    force_basic_auth: yes
+#    url: "http://127.0.0.1:8080/crumbIssuer/api/json"
+#    return_content: yes
+#    status_code: 200, 404
+#  register: jenkins_crumb
+#  until: jenkins_crumb.status == 200 and jenkins_crumb.content.find('Please wait while Jenkins is getting ready to work') == -1
+#  retries: 10
+#  delay: 5
+#
+#- name: Set crumb token
+#  set_fact:
+#    jenkins_crumb_token: "{{ jenkins_crumb.json.crumbRequestField }}={{ jenkins_crumb.json.crumb }}"
+#
+#- name: Get installed plugins
+#  uri:
+#    user: admin
+#    password: "{{ jenkins_admin_password }}"
+#    force_basic_auth: yes
+#    url: "http://127.0.0.1:8080/pluginManager/api/json?tree=plugins[shortName]&{{ jenkins_crumb_token }}"
+#    return_content: yes
+#  register: jenkins_installed_plugins
+#
+#- name: Install plugins
+#  uri:
+#    user: admin
+#    password: "{{ jenkins_admin_password }}"
+#    force_basic_auth: yes
+#    url: "http://127.0.0.1:8080/pluginManager/install?plugin.{{ item }}.default=on&{{ jenkins_crumb_token }}"
+#    method: POST
+#    status_code: [200, 302]
+#  when: item not in jenkins_installed_plugins.json.plugins|map(attribute='shortName')|list
+#  with_items: "{{ jenkins_plugins }}"
+#
+#- name: Wait for plugins to be installed
+#  uri:
+#    user: admin
+#    password: "{{ jenkins_admin_password }}"
+#    force_basic_auth: yes
+#    url: "http://127.0.0.1:8080/updateCenter/installStatus?{{ jenkins_crumb_token }}"
+#    return_content: yes
+#  register: jenkins_plugin_status
+#  until: "'Pending' not in jenkins_plugin_status.json.data.jobs|map(attribute='installStatus')"
+#  retries: 60
+#  delay: 10
+#
+#  - name: Check if we need to restart Jenkins to activate plugins
+#  uri:
+#    user: admin
+#    password: "{{ jenkins_admin_password }}"
+#    force_basic_auth: yes
+#    url: "http://127.0.0.1:8080/updateCenter/api/json\
+#    ?tree=restartRequiredForCompletion&{{ jenkins_crumb_token }}"
+#    return_content: yes
+#  register: jenkins_restart_required
+#
+#- name: Restart Jenkins to activate new plugins
+#  service: name=jenkins state=restarted
+#  when: jenkins_restart_required.json.restartRequiredForCompletion|bool
+#
+#- name: Wait for Jenkins to become available
+#  wait_for: port=8080
