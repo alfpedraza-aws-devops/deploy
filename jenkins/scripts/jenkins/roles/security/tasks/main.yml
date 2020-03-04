@@ -12,7 +12,7 @@
 # Setup an admin user and its password for Jenkins
 
 - name: Create a Jenkins admin password hash
-  shell: echo -n "{{ jenkins_admin_password }}{salt__value}" | sha256sum - | awk '{ print $1; }'
+  shell: echo -n "{{ jenkins_admin_password }}{salt_value}" | sha256sum - | awk '{ print $1; }'
   register: jenkins_password_hash
 
 - name: Create the admin user folder under the Jenkins users folder
