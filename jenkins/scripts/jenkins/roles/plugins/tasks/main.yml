@@ -25,7 +25,7 @@
   service:
     name: jenkins
     state: restarted
-  when: jenkins_admin_config|changed
+  when: jenkins_admin_config.changed
 
 - name: Wait for Jenkins to become available
   wait_for:
