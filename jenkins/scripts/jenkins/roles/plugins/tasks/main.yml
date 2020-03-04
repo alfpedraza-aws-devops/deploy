@@ -1,13 +1,13 @@
 ---
 # Install the Jenkins plugins
 
-- name: Start the Jenkins service
+- name: Start the Jenkins service so the plugins can be installed
   service:
     name: jenkins
     enabled: yes
     state: started
 
-- name: Wait until jenkins is available
+- name: Wait until the Jenkins service is available
   uri:
     url: "http://127.0.0.1:8080/"
     return_content: yes
@@ -17,23 +17,27 @@
   retries: 10
   delay: 5
 
-- name: Install the git Jenkins plugin
+- name: Install the "git" Jenkins plugin. Required to checkout code
   jenkins_plugin:
      name: git
+     state: present
 
-- name: Install the job-dsl Jenkins plugin
+- name: Install the job-dsl Jenkins plugin. Required to create projects programatically
   jenkins_plugin:
     name: job-dsl
+    state: present
 
-- name: Install the workflow-aggregator Jenkins plugin
+- name: Install the workflow-aggregator Jenkins plugin. It's the pipeline plugin
   jenkins_plugin:
     name: workflow-aggregator
+    state: present
 
-- name: Install the workflow-cps Jenkins plugin
+- name: Install the workflow-cps Jenkins plugin. Required to run the groovy Jenkinsfile script
   jenkins_plugin:
     name: workflow-cps
+    state: present
 
-- name: Restart jenkins
+- name: Restart the Jenkins service to apply the changes
   service:
     name: jenkins
     state: restarted

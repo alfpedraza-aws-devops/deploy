@@ -1,18 +1,21 @@
 ---
-# Setup the Jenkins authorizationStrategy and securityRealm properties
-# Then setup an admin user and password
+# Setup the Jenkins authorizationStrategy and securityRealm
+# properties in the jenkins config.file
 
-- name: Copy the config.xml file to the jenkins folder
+- name: Copy the jenkins-config.xml file to the Jenkins folder
   copy:
-    src: "config.xml"
+    src: "jenkins-config.xml"
     dest: "~jenkins/config.xml"
+    force: yes
   register: jenkins_config_change
 
+# Setup an admin user and its password for Jenkins
+
 - name: Create a Jenkins admin password hash
-  shell: echo -n "{{ jenkins_admin_password }}{ansible_jenkins}" | sha256sum - | awk '{ print $1; }'
+  shell: echo -n "{{ jenkins_admin_password }}{salt__value}" | sha256sum - | awk '{ print $1; }'
   register: jenkins_password_hash
 
-- name: Create the admin user directory
+- name: Create the admin user folder under the Jenkins users folder
   file:
     path: "~jenkins/users/admin"
     owner: jenkins
@@ -21,14 +24,14 @@
     recurse: yes
     state: directory
 
-- name: Create the admin user configuration file
+- name: Generate the admin user configuration file from the template
   template:
     src: "admin-config.xml.j2"
     dest: "~jenkins/users/admin/config.xml"
     force: no
   register: jenkins_admin_config
 
-- name: Restart jenkins if necessary
+- name: Restart the Jenkins service if necessary
   service:
     name: jenkins
     state: restarted

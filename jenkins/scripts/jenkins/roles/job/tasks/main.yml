@@ -1,0 +1,8 @@
+---
+# Install the Jenkins job
+
+#- name: Create a Jenkins job to run a pipeline
+#  jenkins_job:
+#    name: 
+#    config: "job-config.xml"
+#    state: present
