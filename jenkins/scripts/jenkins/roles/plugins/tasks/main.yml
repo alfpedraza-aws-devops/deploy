@@ -19,7 +19,7 @@
     src: "admin-config.xml.j2"
     dest: "~jenkins/users/admin/config.xml"
     force: no
-    register: jenkins_admin_config
+  register: jenkins_admin_config
 
 - name: Restart jenkins if necessary
   service:
