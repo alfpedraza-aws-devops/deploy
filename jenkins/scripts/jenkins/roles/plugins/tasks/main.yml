@@ -1,16 +1,40 @@
 ---
-# Install the git and pipeline Jenkins plugins
+# Install the admin user
 
-# Remove this when the test is done.
-- name: Start the Jenkins service
+- name: Create a Jenkins admin password hash
+  shell: echo -n "{{ jenkins_admin_password }}{ansible_jenkins}" | sha256sum - | awk '{ print $1; }'
+  register: jenkins_password_hash
+
+- name: Create the admin user directory
+  file:
+    path: "~jenkins/users/admin"
+    owner: jenkins
+    group: jenkins
+    mode: 0755
+    recurse: yes
+    state: directory
+
+- name: Create the admin user configuration file
+  template:
+    src: "admin-config.xml.j2"
+    dest: "~jenkins/users/admin/config.xml"
+    force: no
+    register: jenkins_admin_config
+
+- name: Restart jenkins if necessary
   service:
     name: jenkins
-    enabled: yes
-    state: started
+    state: restarted
+  when: jenkins_admin_config|changed
 
-- name: Wait for the Jenkins service to become available
+- name: Wait for Jenkins to become available
   wait_for:
     port: 8080
+
+
+
+
+# Install the git and pipeline Jenkins plugins
 
 # - name: Install the pipeline Jenkins plugin
 #   jenkins_plugin:

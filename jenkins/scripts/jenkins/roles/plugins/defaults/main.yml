@@ -1,0 +1,6 @@
+jenkins_admin_password: P4zzw0rd.LJEAS#!
+jenkins_plugins:
+- git
+- job-dsl
+- workflow-aggregator
+- workflow-cps
