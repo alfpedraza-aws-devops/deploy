@@ -2,12 +2,12 @@
 - hosts: localhost
   become: yes
   roles:
-  - common
-  - docker
-  - kubectl
-  - helm
-  - terraform
-  - aws
-  - initscripts
-  - jenkins
- # - plugins
+ # - common
+ # - docker
+ # - kubectl
+ # - helm
+ # - terraform
+ # - aws
+ # - initscripts
+ # - jenkins
+  - plugins

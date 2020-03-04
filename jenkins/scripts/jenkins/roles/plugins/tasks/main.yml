@@ -1,14 +1,23 @@
 ---
 # Install the git and pipeline Jenkins plugins
 
-- name: Wait for the Jenkins service to become available
-  wait_for:
-    port: 8080
+- name: Say hello
+  command: echo 'Hello!'
 
-- name: Install the pipeline Jenkins plugin
-  jenkins_plugin:
-    name: pipeline
+# - name: Start the Jenkins service
+#   service:
+#     name: jenkins
+#     enabled: yes
+#     state: started
 
-- name: Install the git Jenkins plugin
-  jenkins_plugin:
-    name: git
+# - name: Wait for the Jenkins service to become available
+#   wait_for:
+#     port: 8080
+
+# - name: Install the pipeline Jenkins plugin
+#   jenkins_plugin:
+#     name: pipeline
+
+# - name: Install the git Jenkins plugin
+#   jenkins_plugin:
+#     name: git
