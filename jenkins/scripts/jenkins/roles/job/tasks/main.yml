@@ -1,4 +1,23 @@
 ---
+# Install the python-jenkins package. Required to run "jenkins_job" task
+
+- name: Add the Python-Jenkins yum repository
+  yum_repository:
+    name: pythonjenkins_repo
+    description: Python Jenkins Package Repository
+    baseurl: https://download-ib01.fedoraproject.org/pub/epel/7/aarch64/
+    state: present
+
+- name: Import the Python-Jenkins repository GPG key
+  rpm_key:
+    key: https://download-ib01.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+    state: present
+
+- name: Install the Python-Jenkins package
+  yum:
+    name: python-jenkins-0.4.14-2.el7.noarch
+    state: present
+
 # Install the Jenkins job
 
 - name: Create a Jenkins job to run a pipeline
