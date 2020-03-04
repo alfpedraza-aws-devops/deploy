@@ -1,4 +1,20 @@
 ---
 
+- name: Start the Jenkins service so the plugins can be installed
+  service:
+    name: jenkins
+    enabled: yes
+    state: started
+
+- name: Wait until the Jenkins service is available
+  uri:
+    url: "http://127.0.0.1:8080/"
+    return_content: yes
+    status_code: 200, 404
+  register: jenkins_wait
+  until: jenkins_wait.status == 200 and jenkins_wait.content.find('Please wait while Jenkins is getting ready to work') == -1
+  retries: 10
+  delay: 5
+  
 - name: Build a job
   command: curl -X POST http://admin:P4zzw0rd.LJEAS#!@localhost:8080/job/aws-devops/build
