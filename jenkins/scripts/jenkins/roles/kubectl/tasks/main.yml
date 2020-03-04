@@ -1,0 +1,19 @@
+---
+# Install the Kubectl command line tool
+
+- name: Add the Kubernetes yum repository
+  yum_repository:
+    name: kubernetes_repo
+    description: Kubernetes Package Repository
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64/
+    state: present
+
+- name: Import the Kubernetes repository GPG key
+  rpm_key:
+    key: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    state: present
+
+- name: Install the Kubectl package
+  yum:
+    name: kubectl-1.10.3-0.x86_64 
+    state: present

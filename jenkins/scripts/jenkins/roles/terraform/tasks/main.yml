@@ -1,0 +1,19 @@
+---
+# Install the Terraform command line tool
+
+- name: Create a temporal folder to download the terraform zip file
+  file:
+    path: /tmp/aws-devops/terraform
+    state: directory
+
+- name: Download the terraform zip file and unzip it
+  unarchive:
+    src: https://releases.hashicorp.com/terraform/0.12.20/terraform_0.12.20_linux_amd64.zip
+    dest: /tmp/aws-devops/terraform
+    remote_src: yes
+    creates: /usr/local/bin/terraform
+    
+- name: Move the terraform binary file into place
+  command:
+    cmd: cp /tmp/aws-devops/terraform/terraform /usr/local/bin/terraform
+    creates: /usr/local/bin/terraform

@@ -1,0 +1,14 @@
+---
+# Install the AWS CLI tool
+
+- name: Download the AWS CLI binary
+  unarchive:
+    src: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    dest: /root
+    remote_src: yes
+    creates: /root/.aws
+
+- name: Execute the AWS installer
+  command:
+    cmd: /root/aws/install
+    creates: /root/.aws

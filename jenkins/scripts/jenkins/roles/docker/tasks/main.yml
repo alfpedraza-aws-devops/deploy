@@ -1,0 +1,35 @@
+---
+# Install the Docker daemon and the Docker client
+
+- name: Add the Docker yum repository
+  yum_repository:
+    name: docker_repo
+    description: Docker Package Repository
+    baseurl: https://download.docker.com/linux/centos/7/x86_64/stable/
+    state: present
+
+- name: Import the Docker repository GPG key
+  rpm_key:
+    key: https://download.docker.com/linux/centos/gpg
+    state: present
+
+- name: Install the Docker Daemon package
+  yum:
+    name: docker-ce-18.09.7-3.el7.x86_64
+    state: present
+
+- name: Install the Docker CLI client package
+  yum:
+    name: docker-ce-cli-18.09.7-3.el7.x86_64
+    state: present
+
+- name: Install Docker Containerd package
+  yum:
+    name: containerd.io-1.2.6-3.3.el7.x86_64
+    state: present
+
+# - name: Start the Docker daemon
+#   service:
+#     name: docker
+#     enabled: yes
+#     state: started

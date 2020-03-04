@@ -1,0 +1,19 @@
+---
+# Install the Helm command line tool
+
+- name: Create a temporal folder to download the helm tar file
+  file:
+    path: /tmp/aws-devops/helm
+    state: directory
+
+- name: Download the helm tar file and unzip it 
+  unarchive:
+    src: https://get.helm.sh/helm-v2.7.2-linux-amd64.tar.gz
+    dest: /tmp/aws-devops/helm    
+    remote_src: yes
+    creates: /usr/local/bin/helm
+
+- name: Move the helm binary file into place
+  command:
+    cmd: cp /tmp/aws-devops/helm/linux-amd64/helm /usr/local/bin/helm
+    creates: /usr/local/bin/helm

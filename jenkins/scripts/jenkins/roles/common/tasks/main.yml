@@ -1,0 +1,7 @@
+---
+# Install the Unzip command line tool
+
+- name: Install the unzip 6.0 package
+  yum:
+    name: unzip-6.0-20.el7.x86_64
+    state: present

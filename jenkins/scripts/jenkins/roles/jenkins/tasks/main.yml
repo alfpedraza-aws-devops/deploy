@@ -1,0 +1,41 @@
+---
+# Install the Jenkins server
+
+- name: Remove any java 1.7.0 previous version if present
+  yum:
+    name: java-1.7.0-openjdk
+    state: absent
+
+- name: Install the java 1.8.0 package
+  yum:
+    name: java-1.8.0-openjdk
+    state: present
+
+- name: Add the Jenkins yum repository
+  yum_repository:
+    name: jenkins_repo
+    description: Jenkins Package Repository
+    baseurl: https://pkg.jenkins.io/redhat/
+    state: present
+
+- name: Import the Jenkins repository GPG key
+  rpm_key:
+    key: https://pkg.jenkins.io/redhat/jenkins.io.key
+    state: present
+
+- name: Install the Jenkins package
+  yum:
+    name: jenkins-2.220-1.1.noarch
+    state: present
+
+- name: Change the Jenkins JAVA options to avoid the setup wizard
+  lineinfile:
+    dest: /etc/sysconfig/jenkins
+    regexp: ^JENKINS_JAVA_OPTIONS=
+    line: JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
+
+- name: Start the Jenkins service
+  service:
+    name: jenkins
+    enabled: yes
+    state: started
