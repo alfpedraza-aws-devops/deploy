@@ -1,6 +1,12 @@
 ---
 # Install the admin user
 
+- name: Copy the config.xml file to the jenkins folder
+  copy:
+    src: "config.xml"
+    dest: "~jenkins/config.xml"
+  register: jenkins_config_change
+
 - name: Create a Jenkins admin password hash
   shell: echo -n "{{ jenkins_admin_password }}{ansible_jenkins}" | sha256sum - | awk '{ print $1; }'
   register: jenkins_password_hash
@@ -10,7 +16,7 @@
     path: "~jenkins/users/admin"
     owner: jenkins
     group: jenkins
-    mode: 0755
+    mode: "0755"
     recurse: yes
     state: directory
 
@@ -25,7 +31,7 @@
   service:
     name: jenkins
     state: restarted
-  when: jenkins_admin_config.changed
+  when: jenkins_config_change.changed or jenkins_admin_config.changed
 
 - name: Wait for Jenkins to become available
   wait_for:
