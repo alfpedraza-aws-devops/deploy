@@ -5,3 +5,9 @@
   yum:
     name: unzip-6.0-20.el7.x86_64
     state: present
+
+- name: Clean the admin password from the entrypoint.sh file
+  lineinfile:
+    dest: /entrypoint.sh
+    regexp: ^ADMIN_PASSWORD=
+    line: ADMIN_PASSWORD=########
