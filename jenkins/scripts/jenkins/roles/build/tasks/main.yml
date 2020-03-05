@@ -23,22 +23,17 @@
     password: P4zzw0rd
     force_basic_auth: yes
     return_content: yes
-    status_code: 200, 404
+    status_code: 200
   register: jenkins_crumb
-  until: jenkins_crumb.status == 200
-  retries: 10
-  delay: 5
-
-- name: Set crumb token
-  set_fact:
-    jenkins_crumb_token: "{{ jenkins_crumb.json.crumb }}"
 
 - name: Build a job
   uri:
     method: "POST"
     headers:
-      "Jenkins-Crumb": "{{ jenkins_crumb_token }}"
+      Jenkins-Crumb: "{{ jenkins_crumb.json.crumb }}"
+      Cookie: "{{ jenkins_crumb.set_cookie }}"
     url: "http://127.0.0.1:8080/job/aws-devops/build"
     user: admin
     password: P4zzw0rd
     force_basic_auth: yes
+    status_code: 203
