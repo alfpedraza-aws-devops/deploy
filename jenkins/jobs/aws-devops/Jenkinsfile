@@ -3,6 +3,9 @@ node {
         git(url: "https://github.com/alfpedraza-aws-devops/fibonacci")
     }
     stage ("Build Fibonacci") {
+        echo 'Waiting 2 minutes...'
+        sleep(120)
+        echo 'Waiting done!'
         def image = docker.build("alfredopedraza/aws-devops-fibonacci:0.1.20", ".")
     }
 }

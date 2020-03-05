@@ -11,18 +11,15 @@
   uri:
     url: "http://localhost:8080/"
     return_content: yes
-    status_code: [200, 403, 404]
+    status_code: [200, 404]
   register: jenkins_wait
-  until: jenkins_wait.status == 403 and jenkins_wait.content.find('Please wait while Jenkins is getting ready to work') == -1
+  until: jenkins_wait.status == 200 and jenkins_wait.content.find('Please wait while Jenkins is getting ready to work') == -1
   retries: 10
   delay: 5
 
 - name: Get the Jenkins crumb and cookies. Required to send request to the Jenkins API 
   uri:
     url: "http://localhost:8080/crumbIssuer/api/json"
-    force_basic_auth: yes
-    user: admin
-    password: "{{ jenkins_admin_password }}"
     return_content: yes
     status_code: [200]
   register: jenkins_crumb
@@ -35,7 +32,4 @@
     }"
     method: "POST"
     url: "http://localhost:8080/job/{{ jenkins_job_name }}/build"
-    force_basic_auth: yes
-    user: admin
-    password: "{{ jenkins_admin_password }}"
     status_code: [201]
