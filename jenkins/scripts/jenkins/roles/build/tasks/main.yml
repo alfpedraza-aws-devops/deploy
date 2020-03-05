@@ -17,19 +17,8 @@
   retries: 10
   delay: 5
 
-- name: Get the Jenkins crumb and cookies. Required to send request to the Jenkins API 
-  uri:
-    url: "http://localhost:8080/crumbIssuer/api/json"
-    return_content: yes
-    status_code: [200]
-  register: jenkins_crumb
-
 - name: Run the pipeline build
   uri:
-    headers: "{
-      '{{ jenkins_crumb.json.crumbRequestField }}': '{{ jenkins_crumb.json.crumb }}',
-      'Cookie': '{{ jenkins_crumb.set_cookie }}'
-    }"
     method: "POST"
     url: "http://localhost:8080/job/{{ jenkins_job_name }}/build"
     status_code: [201]
