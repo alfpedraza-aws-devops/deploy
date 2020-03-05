@@ -35,6 +35,7 @@
 
 - name: Build a job
   uri:
+    method: "POST"
     url: "http://127.0.0.1:8080/job/aws-devops/build?{{ jenkins_crumb_token }}"
     user: admin
     password: P4zzw0rd
