@@ -11,10 +11,6 @@
 
 # Setup an admin user and its password for Jenkins
 
-- name: Create a Jenkins admin password hash
-  shell: echo -n "{{ jenkins_admin_password }}{salt_value}" | sha256sum - | awk '{ print $1; }'
-  register: jenkins_password_hash
-
 - name: Create the admin folder under the Jenkins users folder
   file:
     path: "~jenkins/users/admin"
@@ -32,8 +28,16 @@
   register: jenkins_admin_config
 
 - name: Restart the Jenkins service if any file changed
-  service:
-    name: jenkins
-    enabled: yes
-    state: restarted
+  uri:
+    url: "http://localhost:8080/safeRestart"
+    status_code: [200]
   when: jenkins_config_change.changed or jenkins_admin_config.changed
+
+
+
+#- name: Restart the Jenkins service if any file changed
+#  service:
+#    name: jenkins
+#    enabled: yes
+#    state: restarted
+#  when: jenkins_config_change.changed or jenkins_admin_config.changed
