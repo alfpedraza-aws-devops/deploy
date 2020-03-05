@@ -16,6 +16,7 @@ yum install -y ansible-2.9.4-1.el7.ans.noarch
 ansible-pull \
     -U https://github.com/alfpedraza-aws-devops/deployment.git \
     -i jenkins/scripts/jenkins/inventory.yml \
-    jenkins/scripts/jenkins/site.yml
+    jenkins/scripts/jenkins/site.yml \
+    --extra-vars "jenkins_job_name=$PROJECT_NAME jenkins_admin_password=$ADMIN_PASSWORD"
 
 echo "Success!"
