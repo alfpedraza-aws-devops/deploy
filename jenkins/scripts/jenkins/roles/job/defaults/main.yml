@@ -1,1 +1,4 @@
+---
 jenkins_job_name: aws-devops
+jenkins_job_github_repo: https://github.com/alfpedraza-aws-devops/deployment.git
+jenkins_job_jenkinsfile_path: jenkins/jobs/aws-devops/Jenkinsfile

@@ -9,9 +9,9 @@
 
 - name: Wait until the Jenkins service is available
   uri:
-    url: "http://127.0.0.1:8080/"
+    url: "http://localhost:8080/"
     return_content: yes
-    status_code: 200, 404
+    status_code: [200, 404]
   register: jenkins_wait
   until: jenkins_wait.status == 200 and jenkins_wait.content.find('Please wait while Jenkins is getting ready to work') == -1
   retries: 10
@@ -40,4 +40,5 @@
 - name: Restart the Jenkins service to apply the changes
   service:
     name: jenkins
+    enabled: yes
     state: restarted

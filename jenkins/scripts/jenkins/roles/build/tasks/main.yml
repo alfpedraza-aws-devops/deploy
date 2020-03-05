@@ -1,6 +1,7 @@
 ---
+# Run the pipeline build.
 
-- name: Start the Jenkins service so the plugins can be installed
+- name: Start the Jenkins service so the build can run
   service:
     name: jenkins
     enabled: yes
@@ -8,32 +9,33 @@
 
 - name: Wait until the Jenkins service is available
   uri:
-    url: "http://127.0.0.1:8080/"
+    url: "http://localhost:8080/"
     return_content: yes
-    status_code: 200, 403, 404
+    status_code: [200, 403, 404]
   register: jenkins_wait
   until: jenkins_wait.status == 403 and jenkins_wait.content.find('Please wait while Jenkins is getting ready to work') == -1
   retries: 10
   delay: 5
 
-- name: Get Jenkins crumb
+- name: Get the Jenkins crumb and cookies. Required to send request to the Jenkins API 
   uri:
-    url: "http://127.0.0.1:8080/crumbIssuer/api/json"
-    user: admin
-    password: P4zzw0rd
+    url: "http://localhost:8080/crumbIssuer/api/json"
     force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
     return_content: yes
-    status_code: 200
+    status_code: [200]
   register: jenkins_crumb
 
-- name: Build a job
+- name: Run the pipeline build
   uri:
+    headers: "{
+      '{{ jenkins_crumb.json.crumbRequestField }}': '{{ jenkins_crumb.json.crumb }}',
+      'Cookie': '{{ jenkins_crumb.set_cookie }}'
+    }"
     method: "POST"
-    headers:
-      Jenkins-Crumb: "{{ jenkins_crumb.json.crumb }}"
-      Cookie: "{{ jenkins_crumb.set_cookie }}"
-    url: "http://127.0.0.1:8080/job/aws-devops/build"
-    user: admin
-    password: P4zzw0rd
+    url: "http://localhost:8080/job/{{ jenkins_job_name }}/build"
     force_basic_auth: yes
-    status_code: 203
+    user: admin
+    password: "{{ jenkins_admin_password }}"
+    status_code: [201]

@@ -2,16 +2,19 @@
 - hosts: localhost
   become: yes
   roles:
- # - common
- # - docker
- # - kubectl
- # - helm
- # - terraform
- # - aws
 
- # - initscripts
- # - jenkins
- # - plugins
- # - job
- # - security
+  # Install the tools required to build a pipeline
+  - common
+  - docker
+  - kubectl
+  - helm
+  - terraform
+  - aws
+
+  # Install and setup the Jenkins package and plugins
+  - initscripts
+  - jenkins
+  - plugins
+  - job
+  - security
   - build

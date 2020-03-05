@@ -28,7 +28,7 @@
     name: containerd.io-1.2.6-3.3.el7.x86_64
     state: present
 
-# - name: Start the Docker daemon
+# - name: Start the Docker daemon service
 #   service:
 #     name: docker
 #     enabled: yes
