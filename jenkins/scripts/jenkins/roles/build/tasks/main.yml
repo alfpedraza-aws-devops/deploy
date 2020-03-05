@@ -16,5 +16,26 @@
   retries: 10
   delay: 5
 
+- name: Get Jenkins crumb
+  uri:
+    url: "http://127.0.0.1:8080/crumbIssuer/api/json"
+    user: admin
+    password: P4zzw0rd
+    force_basic_auth: yes
+    return_content: yes
+    status_code: 200, 404
+  register: jenkins_crumb
+  until: jenkins_crumb.status == 200
+  retries: 10
+  delay: 5
+
+- name: Set crumb token
+  set_fact:
+    jenkins_crumb_token: "{{ jenkins_crumb.json.crumbRequestField }}={{ jenkins_crumb.json.crumb }}"
+
 - name: Build a job
-  command: curl -X POST http://admin:P4zzw0rd@localhost:8080/job/aws-devops/build
+  uri:
+    url: "http://127.0.0.1:8080/job/aws-devops/build?{{ jenkins_crumb_token }}"
+    user: admin
+    password: P4zzw0rd
+    force_basic_auth: yes
