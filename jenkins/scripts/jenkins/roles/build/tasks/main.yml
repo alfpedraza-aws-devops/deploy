@@ -31,7 +31,7 @@
 
 - name: Set crumb token
   set_fact:
-    jenkins_crumb_token: "{{ jenkins_crumb.json.crumbRequestField }}: {{ jenkins_crumb.json.crumb }}"
+    jenkins_crumb_token: "{{ jenkins_crumb.json.crumb }}"
 
 - name: Build a job
   uri:
