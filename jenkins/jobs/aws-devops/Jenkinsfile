@@ -1,0 +1,8 @@
+node {
+    stage ("Checkout Fibonacci") {
+        git(url: "https://github.com/alfpedraza-aws-devops/fibonacci")
+    }
+    stage ("Build Fibonacci") {
+        def image = docker.build("alfredopedraza/aws-devops-fibonacci:0.1.20", ".")
+    }
+}
