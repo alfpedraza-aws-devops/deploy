@@ -1,8 +1,8 @@
-resource "aws_instance" "master" {
-    subnet_id              = aws_subnet.private.id
-    ami                    = data.aws_ami.cluster_image.id
-    instance_type          = var.cluster_instance_type
-    key_name               = aws_key_pair.cluster.key_name
+resource "aws_instance" "jenkins" {
+    subnet_id              = aws_subnet.private_jenkins.id
+    ami                    = data.aws_ami.server_image.id
+    instance_type          = var.server_instance_type
+    key_name               = data.terraform_remote_state.vpc.outputs.key_name
     vpc_security_group_ids = [aws_security_group.master.id]
     user_data              = join("", [
                              file("scripts/metadata.sh"),
@@ -13,9 +13,7 @@ resource "aws_instance" "master" {
                              file("scripts/master/share-join-data.sh"),
                              file("scripts/master/install-plugins.sh"),
                              file("scripts/master/main.sh")])
-    iam_instance_profile   = aws_iam_instance_profile.master.name
 
-    depends_on = [aws_instance.nat_gateway]
     tags = merge(local.common_tags, map(
         "Name", "master",
         "kubernetes.io/cluster/${var.cluster_name}", "owned"
@@ -26,7 +24,7 @@ resource "aws_instance" "master" {
     }
 }
 
-data "aws_ami" "cluster_image" {
+data "aws_ami" "server_image" {
     most_recent = true
     owners = ["099720109477"]
 

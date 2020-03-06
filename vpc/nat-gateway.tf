@@ -20,7 +20,7 @@ resource "aws_instance" "nat_gateway" {
   subnet_id              = aws_subnet.public.id
   ami                    = data.aws_ami.nat_instance.id
   instance_type          = var.nat_gateway_instance_type
-  key_name               = aws_key_pair.project.key_name
+  key_name               = aws_key_pair.key_pair.key_name
   vpc_security_group_ids = [aws_security_group.nat_gateway.id]
   source_dest_check      = false
 

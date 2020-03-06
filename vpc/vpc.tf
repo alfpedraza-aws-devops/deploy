@@ -29,7 +29,7 @@ resource "aws_internet_gateway" "igw" {
 # Create the key pair that will be used to secure the AWS instances           #
 # ----------------------------------------------------------------------------#
 
-resource "aws_key_pair" "project" {
+resource "aws_key_pair" "key_pair" {
   key_name   = var.project_name
   public_key = var.project_public_key
 
