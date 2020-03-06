@@ -33,3 +33,11 @@
     enabled: yes
     state: restarted
   when: jenkins_config_change.changed or jenkins_admin_config.changed
+
+- name: Create a file to flag the finish of the setup
+  file:
+    path: /jenkins-completed
+    state: touch
+    owner: root
+    group: root
+    mode: "0600"
