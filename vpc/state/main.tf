@@ -10,6 +10,6 @@ provider "aws" {
 module "terraform_state" {
   source = "../../modules/terraform-state"
   region_name = var.region_name
-  bucket_name = var.account_id + "-" + var.project_name + "-bucket-" + var.terraform_module
-  table_name = var.account_id + "-" + var.project_name + "-table-" + var.terraform_module
+  bucket_name = join("-", [var.account_id, var.project_name, "bucket", var.terraform_module])    
+  table_name = join("-", [var.account_id, var.project_name, "table", var.terraform_module])
 }

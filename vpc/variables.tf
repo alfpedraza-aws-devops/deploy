@@ -64,7 +64,7 @@ variable "project_public_key" {
 }
 
 locals {
-    vpc_availability_zone = var.region_name + "a"
+    vpc_availability_zone = join("", [var.region_name, "a"])
     common_tags = {
         ApplicationId = var.project_name
     }
