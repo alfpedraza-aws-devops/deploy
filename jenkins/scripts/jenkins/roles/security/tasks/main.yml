@@ -28,16 +28,8 @@
   register: jenkins_admin_config
 
 - name: Restart the Jenkins service if any file changed
-  uri:
-    url: "http://localhost:8080/safeRestart"
-    status_code: [200]
+  service:
+    name: jenkins
+    enabled: yes
+    state: restarted
   when: jenkins_config_change.changed or jenkins_admin_config.changed
-
-
-
-#- name: Restart the Jenkins service if any file changed
-#  service:
-#    name: jenkins
-#    enabled: yes
-#    state: restarted
-#  when: jenkins_config_change.changed or jenkins_admin_config.changed

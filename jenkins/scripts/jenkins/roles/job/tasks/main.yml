@@ -20,7 +20,7 @@
 
 # Install the Jenkins job
 
-- name: Start the Jenkins service so the plugins can be installed
+- name: Start the Jenkins service so the job can be created
   service:
     name: jenkins
     enabled: yes
@@ -41,3 +41,9 @@
     name: "{{ jenkins_job_name }}"
     config: "{{ lookup('template', 'templates/job-config.xml.j2') }}"
     state: present
+
+- name: Restart the Jenkins service to apply the changes
+  service:
+    name: jenkins
+    enabled: yes
+    state: restarted
