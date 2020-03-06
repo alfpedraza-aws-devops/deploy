@@ -1,109 +1,92 @@
-resource "aws_instance" "jenkins" {
-    subnet_id              = aws_subnet.private_jenkins.id
-    ami                    = data.aws_ami.server_image.id
-    instance_type          = var.server_instance_type
-    key_name               = data.terraform_remote_state.vpc.outputs.key_name
-    vpc_security_group_ids = [aws_security_group.master.id]
-    user_data              = join("", [
-                             file("scripts/metadata.sh"),
-                             "GLOBAL_CLUSTER_NAME=${var.cluster_name}",
-                             file("scripts/dependencies.sh"),
-                             file("scripts/kubelet.sh"),
-                             file("scripts/master/start-cluster.sh"),
-                             file("scripts/master/share-join-data.sh"),
-                             file("scripts/master/install-plugins.sh"),
-                             file("scripts/master/main.sh")])
-
-    tags = merge(local.common_tags, map(
-        "Name", "master",
-        "kubernetes.io/cluster/${var.cluster_name}", "owned"
-    ))
-
-    lifecycle {
-        ignore_changes = [tags]
-    }
-}
+# ----------------------------------------------------------------------------#
+# Get the AMI for the Jenkins server                                          #
+# ----------------------------------------------------------------------------#
 
 data "aws_ami" "server_image" {
-    most_recent = true
-    owners = ["099720109477"]
+  most_recent = true
+  owners = ["679593333241"]
 
-    filter {
-        name   = "name"
-        values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
-    }
+  filter {
+    name   = "name"
+    values = ["CentOS 7.0 - 18.0.0.0SEv0.2*"]
+  }
 }
 
-resource "aws_security_group" "master" {
-    name        = "master"
-    description = "Allows access to the Master node."
-    vpc_id      = aws_vpc.vpc.id
+# ----------------------------------------------------------------------------#
+# Create the Jenkins server in the private Jenkins subnet                     #
+# ----------------------------------------------------------------------------#
 
-    tags = merge(local.common_tags, map(
-        "Name", "master"
-    ))
+resource "aws_instance" "jenkins" {
+  subnet_id              = aws_subnet.private_jenkins.id
+  ami                    = data.aws_ami.server_image.id
+  instance_type          = var.server_instance_type
+  key_name               = data.terraform_remote_state.vpc.outputs.key_name
+  vpc_security_group_ids = [aws_security_group.jenkins.id]
+  user_data              = join("\n", [
+                           "#!/bin/bash",
+                           "PROJECT_NAME=${var.project_name}",
+                           "PASSWORD_HASH=${external.hash_password.result.hash}",
+                           file("scripts/setup-jenkins.sh")])
+
+  tags = merge(local.common_tags, map(
+    "Name", "jenkins"
+  ))
 }
 
-# Declare the rules outside of the security group to avoid cycles.
-resource "aws_security_group_rule" "master_ingress_01" {
-    security_group_id        = aws_security_group.master.id
-    type                     = "ingress"
-    from_port                = 0
-    to_port                  = 65535
-    protocol                 = "tcp"
-    source_security_group_id = aws_security_group.nodes.id
+# ----------------------------------------------------------------------------#
+# Declare an external shell script that can hash a password                   #
+# ----------------------------------------------------------------------------#
+
+data "external" "hash_password" {
+  program = ["bash", "-c", "${path.root}/scripts/hash-password.sh ${var.jenkins_admin_password}"]
 }
 
-resource "aws_security_group_rule" "master_ingress_02" {
-    security_group_id        = aws_security_group.master.id
-    type                     = "ingress"
-    from_port                = 6443
-    to_port                  = 6443
-    protocol                 = "tcp"
-    source_security_group_id = aws_security_group.nodes.id
-}
+# ----------------------------------------------------------------------------#
+# Create the firewall rules for the NAT gateway                               #
+# ----------------------------------------------------------------------------#
 
-resource "aws_security_group_rule" "master_ingress_03" {
-    security_group_id        = aws_security_group.master.id
-    type                     = "ingress"
-    from_port                = 22
-    to_port                  = 22
-    protocol                 = "tcp"
-    source_security_group_id = aws_security_group.nat_gateway.id
-}
+resource "aws_security_group" "jenkins" {
+  name        = "jenkins"
+  description = "Allows access to the Jenkins server."
+  vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
 
-resource "aws_security_group_rule" "master_ingress_04" {
-    security_group_id        = aws_security_group.master.id
-    type                     = "ingress"
-    from_port                = 6443
-    to_port                  = 6443
-    protocol                 = "tcp"
-    source_security_group_id = aws_security_group.nat_gateway.id
-}
+  # Ingress Rules
 
-resource "aws_security_group_rule" "master_ingress_05" {
-    security_group_id        = aws_security_group.master.id
-    type                     = "ingress"
-    from_port                = 53
-    to_port                  = 53
-    protocol                 = "tcp"
-    source_security_group_id = aws_security_group.nodes.id
-}
+  ingress {
+    description = "SSH Port"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-resource "aws_security_group_rule" "master_ingress_06" {
-    security_group_id        = aws_security_group.master.id
-    type                     = "ingress"
-    from_port                = 53
-    to_port                  = 53
-    protocol                 = "udp"
-    source_security_group_id = aws_security_group.nodes.id
-}
+  ingress {
+    description = "Jenkins Port"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-resource "aws_security_group_rule" "master_egress_01" {
-    security_group_id = aws_security_group.master.id
-    type              = "egress"
-    from_port         = 0
-    to_port           = 0
-    protocol          = "-1"
-    cidr_blocks       = ["0.0.0.0/0"]
+  # Egress Rules
+
+  egress {
+    description = "SSH Port"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description = "Jenkins Port"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = merge(local.common_tags, map(
+    "Name", "jenkins"
+  ))
 }

@@ -17,12 +17,17 @@ variable "project_name" {
   type = string
 }
 
+variable "jenkins_admin_password" {
+  description = "The password for the Jenkins admin user"
+  type = string
+}
+
 # ----------------------------------------------------------------------------#
 # Optional Parameters                                                         #
 # ----------------------------------------------------------------------------#
 
 variable "server_instance_type" {
-  description = "The instance type for the Jenkins server machine"
+  description = "The instance type for the Jenkins server"
   type = string
   default = "t2.micro"
 }

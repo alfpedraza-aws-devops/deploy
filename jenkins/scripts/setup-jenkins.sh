@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Install git 2.18
 yum-config-manager --add-repo http://opensource.wandisco.com/centos/7/git/x86_64/
 yum-config-manager --save --setopt=opensource.wandisco.com_centos_7_git_x86_64_.gpgkey=http://opensource.wandisco.com/RPM-GPG-KEY-WANdisco
