@@ -37,7 +37,13 @@
     name: workflow-cps
     state: present
 
-- name: Restart the Jenkins service to apply the changes
+- name: Add the jenkins user to the docker user group
+  user:
+    name: jenkins
+    groups: [docker]
+    append: yes
+
+- name: Restart the Jenkins service to apply all the changes
   service:
     name: jenkins
     enabled: yes
