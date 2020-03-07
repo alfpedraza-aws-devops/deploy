@@ -14,8 +14,8 @@
     status_code: [200, 404]
   register: jenkins_wait
   until: jenkins_wait.status == 200 and jenkins_wait.content.find('Please wait while Jenkins is getting ready to work') == -1
-  retries: 20
-  delay: 5
+  retries: 30
+  delay: 6
 
 - name: Install the "git" Jenkins plugin. Required to checkout code
   jenkins_plugin:
