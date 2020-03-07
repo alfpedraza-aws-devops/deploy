@@ -47,9 +47,9 @@
     method: "POST"
     headers: '{"{{ jenkins_crumb.json.crumbRequestField }}":"{{ jenkins_crumb.json.crumb }}","Cookie":"{{ jenkins_crumb.set_cookie }}"}'
     url: "http://localhost:8080/credentials/store/system/domain/_/createCredentials"
-    body_format: json
+    body_format: form-urlencoded
     body: >
-      {
+      json={
         "": "0",
         "credentials": {
           "scope": "GLOBAL",
