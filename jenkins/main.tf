@@ -7,6 +7,10 @@ provider "aws" {
   region = var.region_name
 }
 
+provider "external" {
+  version = "~> 1.2"
+}
+
 terraform {
   backend "s3" { }
 }

@@ -4,11 +4,11 @@
 
 data "aws_ami" "server_image" {
   most_recent = true
-  owners = ["679593333241"]
+  owners = ["161831738826"]
 
   filter {
     name   = "name"
-    values = ["CentOS 7.0 - 18.0.0.0SEv0.2*"]
+    values = ["centos-7-base-*"]
   }
 }
 
@@ -25,7 +25,7 @@ resource "aws_instance" "jenkins" {
   user_data              = join("\n", [
                            "#!/bin/bash",
                            "PROJECT_NAME=${var.project_name}",
-                           "PASSWORD_HASH=${external.hash_password.result.hash}",
+                           "PASSWORD_HASH=${data.external.hash_password.result.hash}",
                            file("scripts/setup-jenkins.sh")])
 
   tags = merge(local.common_tags, map(
@@ -71,18 +71,9 @@ resource "aws_security_group" "jenkins" {
   # Egress Rules
 
   egress {
-    description = "SSH Port"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    description = "Jenkins Port"
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
