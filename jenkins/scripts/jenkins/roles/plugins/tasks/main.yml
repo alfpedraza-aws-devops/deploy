@@ -20,26 +20,35 @@
 - name: Install the "git" Jenkins plugin. Required to checkout code
   jenkins_plugin:
      name: git
-     timeout: "120"
      state: present
+  register: jenkins_git_plugin
+  until: jenkins_git_plugin is not failed
+  retries: 5
 
 - name: Install the job-dsl Jenkins plugin. Required to create projects programatically
   jenkins_plugin:
     name: job-dsl
-    timeout: "120"
     state: present
+  register: jenkins_job_dsl_plugin
+  until: jenkins_job_dsl_plugin is not failed
+  retries: 5
 
 - name: Install the workflow-aggregator Jenkins plugin. It's the pipeline plugin
   jenkins_plugin:
     name: workflow-aggregator
-    timeout: "120"
     state: present
+  register: jenkins_wfa_plugin
+  until: jenkins_wfa_plugin is not failed
+  retries: 5
 
 - name: Install the workflow-cps Jenkins plugin. Required to run the groovy Jenkinsfile script
   jenkins_plugin:
     name: workflow-cps
     timeout: "120"
     state: present
+  register: jenkins_wfc_plugin
+  until: jenkins_wfc_plugin is not failed
+  retries: 5
 
 - name: Add the jenkins user to the docker user group. Required to run docker with the jenkins user
   user:
