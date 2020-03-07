@@ -31,6 +31,9 @@ resource "aws_instance" "jenkins" {
     "Name", "jenkins"
   ))
 
+  # Store the passwords and secret information as RAM files, so they are never
+  # written to disk. Once the user_data script reads them, it deletes these files.
+  # This uses ssh so the data is kept safe while is in transit to the instance.
   provisioner "remote-exec" {
     inline = [
       "mkdir -p /dev/shm/aws-devops/credentials",
