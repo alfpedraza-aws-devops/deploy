@@ -11,6 +11,14 @@
 
 # Setup an admin user and its password for Jenkins
 
+- set_fact:
+    jenkins_admin_password: "{{ lookup('file', '/dev/shm/aws-devops/credentials/jenkins-admin-password') }}"
+
+- name: Get the hash value for the jenkins admin password
+  command:
+    cmd: "echo -n '{{ jenkins_admin_password }}{salt_value}' | sha256sum - | awk '{ print $1; }'"
+  register: jenkins_password_hash
+
 - name: Create the admin folder under the Jenkins users folder
   file:
     path: "~jenkins/users/admin"
@@ -26,20 +34,10 @@
     dest: "~jenkins/users/admin/config.xml"
     force: no
   register: jenkins_admin_config
-
+    
 - name: Restart the Jenkins service if any file changed
   service:
     name: jenkins
     enabled: yes
     state: restarted
   when: jenkins_config_change.changed or jenkins_admin_config.changed
-
-- name: Create a file to flag the finish of the setup
-  file:
-    path: /jenkins-completed
-    state: touch
-    owner: root
-    group: root
-    mode: "0600"
-    modification_time: preserve
-    access_time: preserve

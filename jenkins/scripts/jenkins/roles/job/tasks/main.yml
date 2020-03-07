@@ -41,9 +41,3 @@
     name: "{{ jenkins_job_name }}"
     config: "{{ lookup('template', 'templates/job-config.xml.j2') }}"
     state: present
-
-- name: Add the "jenkins" user to "docker" user group
-  user:
-    name: jenkins
-    groups: [docker]
-    append: yes

@@ -15,6 +15,6 @@ ansible-pull \
     -U https://github.com/alfpedraza-aws-devops/deployment.git \
     -i jenkins/scripts/jenkins/inventory.yml \
     jenkins/scripts/jenkins/site.yml \
-    --extra-vars "jenkins_job_name=$PROJECT_NAME jenkins_password_hash=$PASSWORD_HASH"
+    --extra-vars "jenkins_job_name=$PROJECT_NAME"
 
 echo "Success!"

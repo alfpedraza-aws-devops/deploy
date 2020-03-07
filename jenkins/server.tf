@@ -25,20 +25,20 @@ resource "aws_instance" "jenkins" {
   user_data              = join("\n", [
                            "#!/bin/bash",
                            "PROJECT_NAME=${var.project_name}",
-                           "PASSWORD_HASH=${data.external.hash_password.result.hash}",
                            file("${path.module}/scripts/setup-jenkins.sh")])
 
   tags = merge(local.common_tags, map(
     "Name", "jenkins"
   ))
-}
 
-# ----------------------------------------------------------------------------#
-# Declare an external shell script that can hash a password                   #
-# ----------------------------------------------------------------------------#
-
-data "external" "hash_password" {
-  program = ["bash", "-c", "${path.module}/scripts/hash-password.sh ${var.jenkins_admin_password}"]
+  provisioner "remote-exec" {
+    inline = [
+      "mkdir -p /dev/shm/aws-devops/credentials",
+      "echo ${var.jenkins_admin_password} > /dev/shm/aws-devops/credentials/jenkins-admin-password",
+      "echo ${var.aws_access_key_id} > /dev/shm/aws-devops/credentials/aws-access-key-id",
+      "echo ${var.aws_secret_access_key} > /dev/shm/aws-devops/credentials/aws-secret-access-key",
+    ]
+  }
 }
 
 # ----------------------------------------------------------------------------#

@@ -22,6 +22,16 @@ variable "jenkins_admin_password" {
   type = string
 }
 
+variable "aws_access_key_id" {
+  description = "An AWS access key associated with an IAM user or role"
+  type = string
+}
+
+variable "aws_secret_access_key" {
+  description = "The secret key associated with the access key"
+  type = string
+}
+
 # ----------------------------------------------------------------------------#
 # Optional Parameters                                                         #
 # ----------------------------------------------------------------------------#
