@@ -11,5 +11,5 @@ resource "aws_iam_role" "jenkins" {
 resource "aws_iam_role_policy" "jenkins" {
   name   = "jenkins"
   role   = aws_iam_role.jenkins.id
-  policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"jenkins\",\"Effect\":\"Allow\",\"Action\":[\"s3:GetObject\",\"s3:DeleteBucket\"],\"Resource\":\"*\"}]}"
+  policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"jenkins\",\"Effect\":\"Allow\",\"Action\":[\"s3:GetObject\",\"s3:DeleteObject\",\"s3:HeadBucket\",\"s3:ListBucket\",\"s3:DeleteBucket\"],\"Resource\":\"*\"}]}"
 }
