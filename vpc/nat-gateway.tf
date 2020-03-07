@@ -110,6 +110,14 @@ resource "aws_security_group" "nat_gateway" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  egress {
+    description = "Jenkins Port"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   tags = merge(local.common_tags, map(
     "Name", "nat-gateway"
   ))

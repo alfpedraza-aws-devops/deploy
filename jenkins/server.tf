@@ -26,7 +26,7 @@ resource "aws_instance" "jenkins" {
                            "#!/bin/bash",
                            "PROJECT_NAME=${var.project_name}",
                            "PASSWORD_HASH=${data.external.hash_password.result.hash}",
-                           file("scripts/setup-jenkins.sh")])
+                           file("${path.module}/scripts/setup-jenkins.sh")])
 
   tags = merge(local.common_tags, map(
     "Name", "jenkins"
@@ -38,7 +38,7 @@ resource "aws_instance" "jenkins" {
 # ----------------------------------------------------------------------------#
 
 data "external" "hash_password" {
-  program = ["bash", "-c", "${path.root}/scripts/hash-password.sh ${var.jenkins_admin_password}"]
+  program = ["bash", "-c", "${path.module}/scripts/hash-password.sh ${var.jenkins_admin_password}"]
 }
 
 # ----------------------------------------------------------------------------#
