@@ -63,7 +63,7 @@
     force_basic_auth: yes
     user: admin
     password: "{{ jenkins_admin_password }}"
-    status_code: [201]
+    status_code: [201, 302]
 
 - name: Run the pipeline build
   uri:
