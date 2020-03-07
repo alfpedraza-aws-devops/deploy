@@ -16,5 +16,6 @@
   - jenkins
   - plugins
   - job
+  - credentials
   - security
   - build

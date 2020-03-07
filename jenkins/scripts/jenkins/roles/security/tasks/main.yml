@@ -11,13 +11,6 @@
 
 # Setup an admin user and its password for Jenkins
 
-- name: Wait until the secret files are present before continuing
-  wait_for:
-    path: /dev/shm/aws-devops/credentials/jenkins-admin-password
-
-- set_fact:
-    jenkins_admin_password: "{{ lookup('file', '/dev/shm/aws-devops/credentials/jenkins-admin-password') }}"
-
 - name: Get the hash value for the jenkins admin password
   shell: "echo -n '{{ jenkins_admin_password }}{salt_value}' | sha256sum - | awk '{ print $1; }'"
   register: jenkins_password_hash

@@ -37,7 +37,7 @@
     name: workflow-cps
     state: present
 
-- name: Add the jenkins user to the docker user group
+- name: Add the jenkins user to the docker user group. Required to run docker with the jenkins user
   user:
     name: jenkins
     groups: [docker]

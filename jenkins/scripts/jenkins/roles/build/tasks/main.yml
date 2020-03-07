@@ -1,18 +1,4 @@
 ---
-
-# Get the secrets and remove the credential files
-
-- name: Get the secret values from the credentials files
-  set_fact:
-    jenkins_admin_password: "{{ lookup('file', '/dev/shm/aws-devops/credentials/jenkins-admin-password') }}"
-    aws_access_key_id: "{{ lookup('file', '/dev/shm/aws-devops/credentials/aws-access-key-id') }}"
-    aws_secret_access_key: "{{ lookup('file', '/dev/shm/aws-devops/credentials/aws-secret-access-key') }}"
-
-- name: Remove the credentials files
-  file:
-    path: "/dev/shm/aws-devops/"
-    state: absent
-
 # Start the server and wait intil is ready.
 
 - name: Start the Jenkins service so the build can run
@@ -48,18 +34,7 @@
     headers: '{"{{ jenkins_crumb.json.crumbRequestField }}":"{{ jenkins_crumb.json.crumb }}","Cookie":"{{ jenkins_crumb.set_cookie }}"}'
     url: "http://localhost:8080/credentials/store/system/domain/_/createCredentials"
     body_format: form-urlencoded
-    body: >
-      json={
-        "": "0",
-        "credentials": {
-          "scope": "GLOBAL",
-          "id": "aws_credentials",
-          "username": "{{ aws_access_key_id }}",
-          "password": "{{ aws_secret_access_key }}",
-          "description": "AWS Credentials",
-          "$class": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl"
-        }
-      }
+    body: "{{ lookup('template', 'templates/create-credentials.json.j2') }}"
     force_basic_auth: yes
     user: admin
     password: "{{ jenkins_admin_password }}"

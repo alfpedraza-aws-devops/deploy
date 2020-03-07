@@ -22,32 +22,17 @@ resource "aws_instance" "jenkins" {
   instance_type          = var.server_instance_type
   key_name               = data.terraform_remote_state.vpc.outputs.key_name
   vpc_security_group_ids = [aws_security_group.jenkins.id]
+  iam_instance_profile   = aws_iam_instance_profile.jenkins.name
   user_data              = join("\n", [
                            "#!/bin/bash",
+                           "REGION_NAME=${var.region_name}",
                            "PROJECT_NAME=${var.project_name}",
+                           "BUCKET_NAME=${var.bucket_name}",
                            file("${path.module}/scripts/setup-jenkins.sh")])
 
   tags = merge(local.common_tags, map(
     "Name", "jenkins"
   ))
-
-  # Store the passwords and secret information as RAM files, so they are never
-  # written to disk. Once the user_data script reads them, it deletes these files.
-  # This uses ssh so the data is kept safe while is in transit to the instance.
-  provisioner "remote-exec" {
-    inline = [
-      "mkdir -p /dev/shm/aws-devops/credentials",
-      "echo ${var.jenkins_admin_password} > /dev/shm/aws-devops/credentials/jenkins-admin-password",
-      "echo ${var.aws_access_key_id} > /dev/shm/aws-devops/credentials/aws-access-key-id",
-      "echo ${var.aws_secret_access_key} > /dev/shm/aws-devops/credentials/aws-secret-access-key",
-    ]
-    connection {
-      type        = "ssh"
-      user        = "centos"
-      host        = self.private_ip
-      private_key = file("~/.ssh/id_rsa")
-    }
-  }
 }
 
 # ----------------------------------------------------------------------------#

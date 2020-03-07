@@ -17,18 +17,8 @@ variable "project_name" {
   type = string
 }
 
-variable "jenkins_admin_password" {
-  description = "The password for the Jenkins admin user"
-  type = string
-}
-
-variable "aws_access_key_id" {
-  description = "An AWS access key associated with an IAM user or role"
-  type = string
-}
-
-variable "aws_secret_access_key" {
-  description = "The secret key associated with the access key"
+variable "bucket_name" {
+  description = "The name of the S3 bucket where the secrets are stored temporally"
   type = string
 }
 
