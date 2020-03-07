@@ -41,6 +41,11 @@ resource "aws_instance" "jenkins" {
       "echo ${var.aws_access_key_id} > /dev/shm/aws-devops/credentials/aws-access-key-id",
       "echo ${var.aws_secret_access_key} > /dev/shm/aws-devops/credentials/aws-secret-access-key",
     ]
+    connection {
+      type  = "ssh"
+      user  = "centos"
+      host  = self.private_ip
+    }
   }
 }
 
