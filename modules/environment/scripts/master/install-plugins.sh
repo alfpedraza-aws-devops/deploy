@@ -50,7 +50,7 @@ function install_cluster_autoscaler() {
     local ACCOUNT_ID=$(get_account_id)
     local REGION=$(get_region_name)
     local CLUSTER_NAME=$GLOBAL_CLUSTER_NAME
-    local IAM_ROLE=EKSClusterAutoscaler_$CLUSTER_NAME
+    local IAM_ROLE=$GLOBAL_CLUSTER_AUTOSCALER_ROLE_NAME
     local BASE_ROLE_ARN="arn:aws:iam::$ACCOUNT_ID:role/"
 
     helm repo add alfpedraza https://alfpedraza.github.io/aws-devops/helm-repo/
@@ -78,4 +78,3 @@ function install_plugins() {
     install_cluster_autoscaler
     install_kubernetes_dashboard
 }
-

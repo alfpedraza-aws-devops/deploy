@@ -27,7 +27,7 @@ output "nat_gateway_id" {
   description = "The id of the NAT Gateway instance"
 }
 
-output "nat_gateway_seurity_group_id" {
+output "nat_gateway_security_group_id" {
   value       = aws_security_group.nat_gateway.id
   description = "The id of the NAT Gateway Security Group"
 }

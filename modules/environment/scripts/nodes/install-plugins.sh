@@ -33,4 +33,3 @@ function install_plugins() {
     sign_kubelet
     setup_the_kubectl
 }
-

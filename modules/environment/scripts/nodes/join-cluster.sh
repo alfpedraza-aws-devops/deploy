@@ -7,7 +7,7 @@ function wait_for_master_ready() {
     # Wait for master until its state is running (i.e. not terminated).
     aws ec2 wait instance-running \
         --filters \
-            "Name=tag:Name,Values=master" \
+            "Name=tag:Name,Values=$GLOBAL_MASTER_NAME" \
             "Name=instance-state-name,Values=pending,running"
     
     # Wait for master until its status is OK.
@@ -59,4 +59,3 @@ function join_cluster() {
     get_join_data
     join_cluster_implementation
 }
-

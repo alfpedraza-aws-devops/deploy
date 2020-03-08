@@ -31,8 +31,8 @@ variable "private_subnet_cidr_block" {
 # Optional Parameters                                                         #
 # ----------------------------------------------------------------------------#
 
-variable "server_instance_type" {
-  description = "The instance type for the Kuberntes nodes"
+variable "node_instance_type" {
+  description = "The instance type for the Kubernetes nodes"
   type = string
   default = "t2.medium"
 }

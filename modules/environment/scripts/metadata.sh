@@ -23,7 +23,7 @@ function get_instance_id() {
 function get_master_instance_id() {
     aws ec2 describe-instances \
         --filters \
-            "Name=tag:Name,Values=master" \
+            "Name=tag:Name,Values=$GLOBAL_MASTER_NAME" \
             "Name=instance-state-name,Values=running" \
         --query "Reservations[*].Instances[*].[InstanceId]" \
         --output text
@@ -39,4 +39,3 @@ function get_master_bucket_name() {
     set -exuo pipefail; #Enable error checking
     echo $BUCKET_NAME
 }
-

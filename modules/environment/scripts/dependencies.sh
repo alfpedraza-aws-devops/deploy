@@ -1,5 +1,3 @@
-
-
 ############################################################################
 ## ABOUT: Includes common functions for master and nodes configurations.  ##
 ############################################################################
@@ -48,4 +46,3 @@ function install_dependencies() {
     install_kubernetes
     install_awscli
 }
-

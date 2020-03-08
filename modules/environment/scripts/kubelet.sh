@@ -70,4 +70,3 @@ function setup_kubectl() {
     chmod a+r /home/ubuntu/.kube/config
     export KUBECONFIG=/home/ubuntu/.kube/config
 }
-

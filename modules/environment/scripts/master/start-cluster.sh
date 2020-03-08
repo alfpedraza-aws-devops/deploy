@@ -18,4 +18,3 @@ function start_cluster() {
     setup_kubectl "/etc/kubernetes/admin.conf"
     install_cni_plugin
 }
-
