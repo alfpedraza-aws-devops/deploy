@@ -31,7 +31,7 @@ resource "aws_instance" "jenkins" {
                            file("${path.module}/scripts/setup-jenkins.sh")])
 
   tags = merge(local.common_tags, map(
-    "Name", "jenkins"
+    "Name", "${var.project_name}-jenkins"
   ))
 }
 
@@ -40,7 +40,7 @@ resource "aws_instance" "jenkins" {
 # ----------------------------------------------------------------------------#
 
 resource "aws_security_group" "jenkins" {
-  name        = "jenkins"
+  name        = "${var.project_name}-jenkins"
   description = "Allows access to the Jenkins server."
   vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
 
@@ -72,6 +72,6 @@ resource "aws_security_group" "jenkins" {
   }
 
   tags = merge(local.common_tags, map(
-    "Name", "jenkins"
+    "Name", "${var.project_name}-jenkins"
   ))
 }
