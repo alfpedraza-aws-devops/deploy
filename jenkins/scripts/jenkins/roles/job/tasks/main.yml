@@ -43,4 +43,5 @@
     state: present
   register: jenkins_job_setup
   until: jenkins_job_setup is not failed
-  retries: 5
+  retries: 30
+  delay: 6

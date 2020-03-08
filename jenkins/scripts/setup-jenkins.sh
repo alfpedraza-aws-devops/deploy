@@ -18,3 +18,7 @@ ansible-pull \
     --extra-vars "jenkins_job_name=$PROJECT_NAME  aws_region_name=$REGION_NAME aws_bucket_name=$BUCKET_NAME"
 
 echo "Success!"
+
+# To show the logs on the centos machine
+#sudo grep cloud-init /var/log/messages
+#-vvvv
