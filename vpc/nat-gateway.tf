@@ -25,7 +25,7 @@ resource "aws_instance" "nat_gateway" {
   source_dest_check      = false
 
   tags = merge(local.common_tags, map(
-    "Name", "${var.project_name}-nat-gateway"
+    "Name", "${var.project_name}-public-nat-gateway"
   ))
 }
 
@@ -34,7 +34,7 @@ resource "aws_instance" "nat_gateway" {
 # ----------------------------------------------------------------------------#
 
 resource "aws_security_group" "nat_gateway" {
-  name        = "${var.project_name}-nat-gateway"
+  name        = "${var.project_name}-public-nat-gateway"
   description = "Allows access to the NAT Gateway."
   vpc_id      = aws_vpc.vpc.id
 
@@ -119,6 +119,6 @@ resource "aws_security_group" "nat_gateway" {
   }
 
   tags = merge(local.common_tags, map(
-    "Name", "${var.project_name}-nat-gateway"
+    "Name", "${var.project_name}-public-nat-gateway"
   ))
 }

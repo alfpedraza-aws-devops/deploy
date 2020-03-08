@@ -27,6 +27,11 @@ output "nat_gateway_id" {
   description = "The id of the NAT Gateway instance"
 }
 
+output "nat_gateway_seurity_group_id" {
+  value       = aws_security_group.nat_gateway.id
+  description = "The id of the NAT Gateway Security Group"
+}
+
 output "key_name" {
   value       = aws_key_pair.key_pair.key_name
   description = "The name of the Key Pair needed to secure the access to the instances"
