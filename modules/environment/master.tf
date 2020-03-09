@@ -26,7 +26,6 @@ resource "aws_instance" "master" {
   user_data              = join("\n\n", [
                            file("${path.module}/scripts/metadata.sh"),
                            "GLOBAL_CLUSTER_NAME=${var.project_name}",
-                           "GLOBAL_ENVIRONMENT_NAME=${var.environment_name}",
                            "GLOBAL_NODE_ROLE_NAME=${aws_iam_role.node.name}",
                            "GLOBAL_CLUSTER_AUTOSCALER_ROLE_NAME=${aws_iam_role.cluster_autoscaler.name}",
                            "GLOBAL_MASTER_NAME=${var.project_name}-private-${var.environment_name}-master",

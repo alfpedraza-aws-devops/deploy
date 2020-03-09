@@ -19,7 +19,7 @@ function create_s3_bucket() {
     local ACCOUNT_ID=$(get_account_id)
     local HOST_NAME=$(get_host_name)
     PRIVATE_REGION_NAME=$(get_region_name)
-    PRIVATE_BUCKET_NAME="$ACCOUNT_ID-$GLOBAL_CLUSTER_NAME-$GLOBAL_ENVIRONMENT_NAME-$HOST_NAME"
+    PRIVATE_BUCKET_NAME="$ACCOUNT_ID-$GLOBAL_MASTER_NAME"
     local BUCKET_POLICY="{\"Version\": \"2012-10-17\",\"Id\": \"Policy1583629506118\",\"Statement\": [{\"Sid\": \"Stmt1583629432359\",\"Effect\": \"Allow\",\"Principal\": {\"AWS\": \"arn:aws:iam::$ACCOUNT_ID:role/$GLOBAL_NODE_ROLE_NAME\"},\"Action\": [\"s3:GetObject\"],\"Resource\": [\"arn:aws:s3:::$PRIVATE_BUCKET_NAME/*\"]}]}"
 
     if [[ $(aws s3api list-buckets --query "Buckets[?Name == '$PRIVATE_BUCKET_NAME'].[Name]" --output text) = "$PRIVATE_BUCKET_NAME" ]]; then
