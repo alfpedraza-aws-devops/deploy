@@ -13,9 +13,9 @@ yum install -y ansible-2.9.4-1.el7.ans.noarch
 # That is docker, kubectl, helm, terraform and aws.
 ansible-pull \
     -U https://github.com/alfpedraza-aws-devops/deployment.git \
-    -i jenkins/scripts/jenkins/inventory.yml \
+    -i jenkins/scripts/jenkins/inventory.yml -vvv \
     jenkins/scripts/jenkins/site.yml \
-    --extra-vars "jenkins_job_name=$PROJECT_NAME  aws_region_name=$REGION_NAME aws_bucket_name=$BUCKET_NAME"
+    --extra-vars "jenkins_job_name=$PROJECT_NAME  aws_region_name=$REGION_NAME aws_bucket_name=$BUCKET_NAME aws_ecr_url=$ECR_URL"
 
 echo "Success!"
 

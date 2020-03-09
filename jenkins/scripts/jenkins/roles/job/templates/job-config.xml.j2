@@ -4,6 +4,24 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties/>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>ECR_URL</name>
+          <description></description>
+          <defaultValue>{{ aws_ecr_url }}</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>REGION_NAME</name>
+          <description></description>
+          <defaultValue>{{ aws_region_name }}</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.80">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@4.2.0">
       <configVersion>2</configVersion>

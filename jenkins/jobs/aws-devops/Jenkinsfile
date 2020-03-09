@@ -1,67 +1,45 @@
-pipeline {
-  agent any
-  stages {
+node {
 
-    stage("Build Fibonacci") {
-      steps {
-        def ecr_url = "456115478862.dkr.ecr.us-east-2.amazonaws.com"
-        def region = "us-east-2"
-        def tag = "0.1.11.${env.BUILD_ID}"
-        def image = "${ecr_url}/aws-devops-fibonacci:${tag}"
-  
-        git(url: "https://github.com/alfpedraza-aws-devops/fibonacci")
-        sh "aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${ecr_url}"
-        sh "docker build -t ${image} ."
-        sh "docker push ${image}"
-      }
-    }
+  stage("Build Fibonacci") {
+    def tag = "0.1.11.${env.BUILD_ID}"
+    def image = "${ecr_url}/aws-devops-fibonacci:${tag}"
 
-    stage("Build Kubernetes API") {
-      steps {
-        git(url: "https://github.com/alfpedraza-aws-devops/kubernetes-api")
-      }
-    }
-
-    stage("Build Web UI") {
-      steps {
-        git(url: "https://github.com/alfpedraza-aws-devops/web-ui")
-      }
-    }
-
-    stage("Update VPC") {
-      steps {
-        echo "Update DEV environment"
-      }
-    }
-
-    stage("Update DEV environment") {
-      steps {
-        echo "Update DEV environment"
-      }
-    }
-
-    stage("Deploy to DEV environment") {
-      steps {
-        echo "Deploy to DEV environment"
-      }
-    }
-
-    stage("Production Approval") {
-      steps {
-        input "Deploy to PROD?"
-      }
-    }
-
-    stage("Update PROD environment") {
-      steps {
-        echo "Update PROD environment"
-      }
-    }
-
-    stage("Deploy to PROD environment") {
-      steps {
-        echo "Deploy to PROD environment"
-      }
-    }
+    git(url: "https://github.com/alfpedraza-aws-devops/fibonacci")
+    sh "aws ecr get-login-password --region ${params.REGION_NAME} | docker login --username AWS --password-stdin ${params.ECR_URL}"
+    sh "docker build -t ${image} ."
+    sh "docker push ${image}"
   }
+
+  stage("Build Kubernetes API") {
+    git(url: "https://github.com/alfpedraza-aws-devops/kubernetes-api")
+  }
+
+  stage("Build Web UI") {
+    git(url: "https://github.com/alfpedraza-aws-devops/web-ui")
+  }
+
+  stage("Update VPC") {
+    echo "Update DEV environment"
+  }
+
+  stage("Update DEV environment") {
+    echo "Update DEV environment"
+  }
+
+  stage("Deploy to DEV environment") {
+    echo "Deploy to DEV environment"
+  }
+
+  stage("Production Approval") {
+    input "Deploy to PROD?"
+  }
+
+  stage("Update PROD environment") {
+    echo "Update PROD environment"
+  }
+
+  stage("Deploy to PROD environment") {
+    echo "Deploy to PROD environment"
+  }
+  
 }
