@@ -17,6 +17,7 @@ data "aws_ami" "server_image" {
 # ----------------------------------------------------------------------------#
 
 resource "aws_instance" "jenkins" {
+  depends_on             = [aws_ecr_repository.repositories]
   subnet_id              = aws_subnet.private_jenkins.id
   ami                    = data.aws_ami.server_image.id
   instance_type          = var.server_instance_type
