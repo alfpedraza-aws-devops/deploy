@@ -48,7 +48,7 @@ pipeline {
 
     stage("Production Approval") {
       steps {
-        echo "Production Approval"
+        input "Deploy to PROD?"
       }
     }
 
