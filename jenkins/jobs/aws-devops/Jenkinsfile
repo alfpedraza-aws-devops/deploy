@@ -1,6 +1,7 @@
 node {
 
   stage ("Build Fibonacci") {
+    sh "echo $PATH"
     def ecr_url = "456115478862.dkr.ecr.us-east-2.amazonaws.com"
     def region = "us-east-2"
     def tag = "0.1.11.${env.BUILD_ID}"
