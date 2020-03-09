@@ -17,6 +17,8 @@ data "aws_ami" "cluster_image" {
 # ----------------------------------------------------------------------------#
 
 resource "aws_instance" "master" {
+  depends_on             = [aws_iam_role.node,
+                            aws_iam_role.cluster_autoscaler]
   subnet_id              = aws_subnet.private_environment.id
   ami                    = data.aws_ami.cluster_image.id
   instance_type          = var.node_instance_type
@@ -35,8 +37,6 @@ resource "aws_instance" "master" {
                            file("${path.module}/scripts/master/share-join-data.sh"),
                            file("${path.module}/scripts/master/install-plugins.sh"),
                            file("${path.module}/scripts/master/main.sh")])
-  depends_on               = [aws_iam_role.node,
-                              aws_iam_role.cluster_autoscaler]
 
   tags = merge(local.common_tags, map(
     "Name", "${var.project_name}-private-${var.environment_name}-master",
