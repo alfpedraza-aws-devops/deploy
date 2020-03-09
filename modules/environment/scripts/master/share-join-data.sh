@@ -34,15 +34,23 @@ function create_s3_bucket() {
     sleep 2
     aws s3api put-public-access-block \
         --bucket $PRIVATE_BUCKET_NAME \
+        --region $PRIVATE_REGION_NAME \
         --public-access-block-configuration \
             "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
     aws s3api put-bucket-policy \
         --bucket $PRIVATE_BUCKET_NAME \
+        --region $PRIVATE_REGION_NAME \
         --policy "$BUCKET_POLICY"
     aws s3api put-bucket-encryption \
         --bucket $PRIVATE_BUCKET_NAME \
+        --region $PRIVATE_REGION_NAME \
         --server-side-encryption-configuration \
             '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
+    aws s3api put-bucket-versioning \
+        --bucket $PRIVATE_BUCKET_NAME \
+        --region $PRIVATE_REGION_NAME \
+        --versioning-configuration \
+            '{"MFADelete":"Disabled","Status":"Enabled"}'
 }
 
 function upload_join_data() {
