@@ -29,7 +29,7 @@ resource "aws_iam_role_policy" "master_instance" {
 resource "aws_iam_role_policy" "master_s3" {
   name   = "s3"
   role   = aws_iam_role.master.id
-  policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"MasterDescribeBuckets\",\"Effect\":\"Allow\",\"Action\":[\"s3:ListAllMyBuckets\"],\"Resource\":\"*\"},{\"Sid\":\"MasterWriteBuckets\",\"Effect\":\"Allow\",\"Action\":[\"s3:CreateBucket\",\"s3:PutObject\"],\"Resource\":\"*\"},{\"Sid\":\"MasterSecureBuckets\",\"Effect\":\"Allow\",\"Action\":[\"s3:PutBucketPublicAccessBlock\",\"s3:PutEncryptionConfiguration\",\"s3:PutBucketPolicy\"],\"Resource\":\"*\"}]}"
+  policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"MasterDescribeBuckets\",\"Effect\":\"Allow\",\"Action\":[\"s3:ListAllMyBuckets\",\"s3:ListBucket\"],\"Resource\":\"*\"},{\"Sid\":\"MasterWriteBuckets\",\"Effect\":\"Allow\",\"Action\":[\"s3:CreateBucket\",\"s3:PutObject\",\"s3:DeleteBucket\",\"s3:DeleteObject\"],\"Resource\":\"*\"},{\"Sid\":\"MasterSecureBuckets\",\"Effect\":\"Allow\",\"Action\":[\"s3:PutBucketPublicAccessBlock\",\"s3:PutEncryptionConfiguration\",\"s3:PutBucketPolicy\"],\"Resource\":\"*\"}]}"
 }
 
 resource "aws_iam_role_policy" "master_ecr" {
