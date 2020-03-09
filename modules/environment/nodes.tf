@@ -10,7 +10,7 @@ resource "aws_launch_configuration" "node" {
   key_name             = data.terraform_remote_state.vpc.outputs.key_name
   security_groups      = [aws_security_group.node.id]
   iam_instance_profile = aws_iam_instance_profile.node.name
-  user_data            = join("", [
+  user_data            = join("\n\n", [
                          file("${path.module}/scripts/metadata.sh"),
                          "GLOBAL_CLUSTER_NAME=${var.project_name}",
                          "GLOBAL_MASTER_NAME=${var.project_name}-private-${var.environment_name}-master",

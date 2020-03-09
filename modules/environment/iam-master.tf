@@ -23,7 +23,13 @@ resource "aws_iam_role" "master" {
 resource "aws_iam_role_policy" "master_instance" {
   name   = "master"
   role   = aws_iam_role.master.id
-  policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"MasterDescribeResources\",\"Effect\":\"Allow\",\"Action\":[\"ec2:DescribeInstances\",\"ec2:DescribeRegions\",\"ec2:DescribeRouteTables\",\"ec2:DescribeSecurityGroups\",\"ec2:DescribeSubnets\",\"ec2:DescribeVolumes\",\"s3:CreateBucket\",\"s3:PutObject\"],\"Resource\":\"*\"},{\"Sid\":\"MasterAllResourcesWriteable\",\"Effect\":\"Allow\",\"Action\":[\"ec2:CreateRoute\",\"ec2:CreateSecurityGroup\",\"ec2:CreateTags\",\"ec2:CreateVolume\",\"ec2:ModifyInstanceAttribute\"],\"Resource\":\"*\"},{\"Sid\":\"MasterTaggedResourcesWritable\",\"Effect\":\"Allow\",\"Action\":[\"ec2:AttachVolume\",\"ec2:AuthorizeSecurityGroupIngress\",\"ec2:DeleteRoute\",\"ec2:DeleteSecurityGroup\",\"ec2:DeleteVolume\",\"ec2:DetachVolume\",\"ec2:RevokeSecurityGroupIngress\"],\"Resource\":\"*\"}]}"
+  policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"MasterDescribeResources\",\"Effect\":\"Allow\",\"Action\":[\"ec2:DescribeInstances\",\"ec2:DescribeRegions\",\"ec2:DescribeRouteTables\",\"ec2:DescribeSecurityGroups\",\"ec2:DescribeSubnets\",\"ec2:DescribeVolumes\"],\"Resource\":\"*\"},{\"Sid\":\"MasterAllResourcesWriteable\",\"Effect\":\"Allow\",\"Action\":[\"ec2:CreateRoute\",\"ec2:CreateSecurityGroup\",\"ec2:CreateTags\",\"ec2:CreateVolume\",\"ec2:ModifyInstanceAttribute\"],\"Resource\":\"*\"},{\"Sid\":\"MasterTaggedResourcesWritable\",\"Effect\":\"Allow\",\"Action\":[\"ec2:AttachVolume\",\"ec2:AuthorizeSecurityGroupIngress\",\"ec2:DeleteRoute\",\"ec2:DeleteSecurityGroup\",\"ec2:DeleteVolume\",\"ec2:DetachVolume\",\"ec2:RevokeSecurityGroupIngress\"],\"Resource\":\"*\"}]}"
+}
+
+resource "aws_iam_role_policy" "master_s3" {
+  name   = "s3"
+  role   = aws_iam_role.master.id
+  policy = "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"MasterDescribeBuckets\",\"Effect\":\"Allow\",\"Action\":[\"s3:ListAllMyBuckets\"],\"Resource\":\"*\"},{\"Sid\":\"MasterWriteBuckets\",\"Effect\":\"Allow\",\"Action\":[\"s3:CreateBucket\",\"s3:PutObject\"],\"Resource\":\"*\"},{\"Sid\":\"MasterSecureBuckets\",\"Effect\":\"Allow\",\"Action\":[\"s3:PutBucketPublicAccessBlock\",\"s3:PutEncryptionConfiguration\",\"s3:PutBucketPolicy\"],\"Resource\":\"*\"}]}"
 }
 
 resource "aws_iam_role_policy" "master_ecr" {
