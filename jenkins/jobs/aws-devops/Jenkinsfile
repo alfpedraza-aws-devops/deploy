@@ -1,9 +1,8 @@
 node {
 
   stage("Build Fibonacci") {
-    def tag = "0.1.11.${env.BUILD_ID}"
+    def tag = "0.1.4.${env.BUILD_ID}"
     def image = "${ecr_url}/aws-devops-fibonacci:${tag}"
-
     git(url: "https://github.com/alfpedraza-aws-devops/fibonacci")
     sh "aws ecr get-login-password --region ${params.REGION_NAME} | docker login --username AWS --password-stdin ${params.ECR_URL}"
     sh "docker build -t ${image} ."
@@ -11,11 +10,21 @@ node {
   }
 
   stage("Build Kubernetes API") {
+    def tag = "0.1.11.${env.BUILD_ID}"
+    def image = "${ecr_url}/aws-devops-kubernetes-api:${tag}"
     git(url: "https://github.com/alfpedraza-aws-devops/kubernetes-api")
+    sh "aws ecr get-login-password --region ${params.REGION_NAME} | docker login --username AWS --password-stdin ${params.ECR_URL}"
+    sh "docker build -t ${image} ."
+    sh "docker push ${image}"
   }
 
   stage("Build Web UI") {
+    def tag = "0.1.4.${env.BUILD_ID}"
+    def image = "${ecr_url}/aws-devops-web-ui:${tag}"
     git(url: "https://github.com/alfpedraza-aws-devops/web-ui")
+    sh "aws ecr get-login-password --region ${params.REGION_NAME} | docker login --username AWS --password-stdin ${params.ECR_URL}"
+    sh "docker build -t ${image} ."
+    sh "docker push ${image}"
   }
 
   stage("Update VPC") {
