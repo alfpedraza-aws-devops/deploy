@@ -1,8 +1,8 @@
 node {
 
   stage("Build Fibonacci") {
+    git("https://github.com/alfpedraza-aws-devops/fibonacci")
     sh """
-      git clone --depth 1 "https://github.com/alfpedraza-aws-devops/fibonacci" .
       ./jenkins/jobs/aws-devops/build-image.sh \
         ${params.REGION_NAME} \
         ${params.ECR_URL} \
@@ -13,8 +13,8 @@ node {
   }
 
   stage("Build Kubernetes API") {
+    git("https://github.com/alfpedraza-aws-devops/kubernetes-api")
     sh """
-      git clone --depth 1 "https://github.com/alfpedraza-aws-devops/kubernetes-api" .
       ./jenkins/jobs/aws-devops/build-image.sh \
         ${params.REGION_NAME} \
         ${params.ECR_URL} \
@@ -25,8 +25,8 @@ node {
   }
 
   stage("Build Web UI") {
+    git("https://github.com/alfpedraza-aws-devops/web-ui")
     sh """
-      git clone --depth 1 "https://github.com/alfpedraza-aws-devops/web-ui" .
       ./jenkins/jobs/aws-devops/build-image.sh \
         ${params.REGION_NAME} \
         ${params.ECR_URL} \
@@ -37,9 +37,12 @@ node {
   }
 
   stage("Update VPC") {
-    withCredentials([usernamePassword(credentialsId: "aws_credentials", usernameVariable: "AWS_ACCESS_KEY_ID", passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
+    git("https://github.com/alfpedraza-aws-devops/deployment")
+    withCredentials([usernamePassword(
+    credentialsId: "aws_credentials",
+    usernameVariable: "AWS_ACCESS_KEY_ID",
+    passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
       sh """
-        git clone --depth 1 "https://github.com/alfpedraza-aws-devops/deployment" .
         cd ./vpc
         ./jenkins/jobs/aws-devops/apply-terraform.sh \
           ${params.ACCOUNT_ID} \
@@ -51,10 +54,13 @@ node {
   }
 
   stage("Update DEV environment") {
-    withCredentials([usernamePassword(credentialsId: "aws_credentials", usernameVariable: "AWS_ACCESS_KEY_ID", passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
+    git("https://github.com/alfpedraza-aws-devops/deployment")
+    withCredentials([usernamePassword(
+    credentialsId: "aws_credentials",
+    usernameVariable: "AWS_ACCESS_KEY_ID",
+    passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
       sh """
-        git clone --depth 1 "https://github.com/alfpedraza-aws-devops/deployment" .
-        cd ./vpc
+        cd ./dev
         ./jenkins/jobs/aws-devops/apply-terraform.sh \
           ${params.ACCOUNT_ID} \
           ${params.REGION_NAME} \
@@ -73,10 +79,13 @@ node {
   }
 
   stage("Update PROD environment") {
-    withCredentials([usernamePassword(credentialsId: "aws_credentials", usernameVariable: "AWS_ACCESS_KEY_ID", passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
+    git("https://github.com/alfpedraza-aws-devops/deployment")
+    withCredentials([usernamePassword(
+    credentialsId: "aws_credentials",
+    usernameVariable: "AWS_ACCESS_KEY_ID",
+    passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
       sh """
-        git clone --depth 1 "https://github.com/alfpedraza-aws-devops/deployment" .
-        cd ./vpc
+        cd ./prod
         ./jenkins/jobs/aws-devops/apply-terraform.sh \
           ${params.ACCOUNT_ID} \
           ${params.REGION_NAME} \
