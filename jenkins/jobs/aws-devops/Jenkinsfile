@@ -38,6 +38,18 @@ def applyTerraformUpdates(accountId, regionName, projectName, environmentName) {
   }
 }
 
+def deployApp(accountId, regionName, projectName, environmentName) {
+  def bucketName = "${accountId}-${projectName}-private-${environmentName}-master"
+  git("https://github.com/alfpedraza-aws-devops/helm")
+  sh """
+    aws s3 cp s3://${bucketName}}/admin.conf ./admin.conf --region ${regionName}
+    helm upgrade \
+      --install \
+      --kubeconfig ./admin.conf \
+      ${projectName} .
+  """
+}
+
 node {
 
   stage("Build Fibonacci") {
@@ -79,7 +91,6 @@ node {
   }
 
   stage("Update DEV environment") {
-    input "Deploy to PROD?"
     applyTerraformUpdates(
       /* accountId       */ params.ACCOUNT_ID,
       /* regionName      */ params.REGION_NAME,
@@ -88,14 +99,15 @@ node {
   }
 
   stage("Deploy to DEV environment") {
-    echo "Deploy to DEV environment"
-  }
-
-  stage("Production Approval") {
-    //input "Deploy to PROD?"
+    deployApp(
+      /* accountId       */ params.ACCOUNT_ID,
+      /* regionName      */ params.REGION_NAME,
+      /* projectName     */ params.PROJECT_NAME,
+      /* environmentName */ "dev")
   }
 
   stage("Update PROD environment") {
+    input "Deploy to PROD?"
     applyTerraformUpdates(
       /* accountId       */ params.ACCOUNT_ID,
       /* regionName      */ params.REGION_NAME,
@@ -104,7 +116,11 @@ node {
   }
 
   stage("Deploy to PROD environment") {
-    echo "Deploy to PROD environment"
+    deployApp(
+      /* accountId       */ params.ACCOUNT_ID,
+      /* regionName      */ params.REGION_NAME,
+      /* projectName     */ params.PROJECT_NAME,
+      /* environmentName */ "prod")
   }
   
 }
