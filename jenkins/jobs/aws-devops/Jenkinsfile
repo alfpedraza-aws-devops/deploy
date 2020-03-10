@@ -4,33 +4,33 @@ node {
     def tag = "0.1.4.${env.BUILD_ID}"
     def image = "${ecr_url}/aws-devops-fibonacci:${tag}"
     git(url: "https://github.com/alfpedraza-aws-devops/fibonacci")
-    sh '''
-      aws ecr get-login-password --region "${params.REGION_NAME}" | docker login --username AWS --password-stdin "${params.ECR_URL}"
-      docker build -t "${image}" .
-      docker push "${image}"
-    '''
+    sh """
+      aws ecr get-login-password --region ${params.REGION_NAME} | docker login --username AWS --password-stdin ${params.ECR_URL}
+      docker build -t ${image} .
+      docker push ${image}
+    """
   }
 
   stage("Build Kubernetes API") {
     def tag = "0.1.11.${env.BUILD_ID}"
     def image = "${ecr_url}/aws-devops-kubernetes-api:${tag}"
     git(url: "https://github.com/alfpedraza-aws-devops/kubernetes-api")
-    sh '''
-      aws ecr get-login-password --region "${params.REGION_NAME}" | docker login --username AWS --password-stdin "${params.ECR_URL}"
-      docker build -t "${image}" .
-      docker push "${image}"
-    '''
+    sh """
+      aws ecr get-login-password --region ${params.REGION_NAME} | docker login --username AWS --password-stdin ${params.ECR_URL}
+      docker build -t ${image} .
+      docker push ${image}
+    """
   }
 
   stage("Build Web UI") {
     def tag = "0.1.4.${env.BUILD_ID}"
     def image = "${ecr_url}/aws-devops-web-ui:${tag}"
     git(url: "https://github.com/alfpedraza-aws-devops/web-ui")
-    sh '''
-      aws ecr get-login-password --region "${params.REGION_NAME}" | docker login --username AWS --password-stdin "${params.ECR_URL}"
-      docker build -t "${image}" .
-      docker push "${image}"
-    '''
+    sh """
+      aws ecr get-login-password --region ${params.REGION_NAME} | docker login --username AWS --password-stdin ${params.ECR_URL}
+      docker build -t ${image} .
+      docker push ${image}
+    """
   }
 
   environment {
@@ -45,7 +45,7 @@ node {
 
   stage("Update DEV environment") {
     git(url: "https://github.com/alfpedraza-aws-devops/deployment")
-    sh '''
+    sh """
       cd ./dev/state
       terraform init -input=false
       terraform apply -input=false -lock=true -auto-approve \
@@ -64,7 +64,7 @@ node {
         -var "account_id=${params.ACCOUNT_ID}" \
         -var "region_name=${params.REGION_NAME}" \
         -var "project_name=${params.PROJECT_NAME}"
-    '''
+    """
   }
 
   stage("Deploy to DEV environment") {
