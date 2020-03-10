@@ -33,10 +33,6 @@ node {
     """
   }
 
-  environment {
-    AWS_CREDS = credentials("aws_credentials")
-  }
-
   stage("Update VPC") {
     
   }
@@ -45,8 +41,8 @@ node {
     git(url: "https://github.com/alfpedraza-aws-devops/deployment")
     withCredentials([usernamePassword(credentialsId: "aws_credentials", usernameVariable: "AWS_ACCESS_KEY_ID", passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
       sh """
-        echo $AWS_ACCESS_KEY_ID
-        echo $AWS_SECRET_ACCESS_KEY
+        echo "${env.AWS_ACCESS_KEY_ID}"
+        echo "${env.AWS_SECRET_ACCESS_KEY}"
         cd ./dev/state
         terraform init -input=false
         terraform apply -input=false -lock=true -auto-approve \
