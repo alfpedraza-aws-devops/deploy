@@ -46,5 +46,4 @@
   retries: 30
   delay: 6
 
-- debug: var=jenkins_job_setup.stdout_lines
-- debug: var=jenkins_job_setup.stderr_lines
+- debug: var=jenkins_job_setup

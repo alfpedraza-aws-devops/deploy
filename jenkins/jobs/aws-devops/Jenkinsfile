@@ -79,6 +79,7 @@ node {
   }
 
   stage("Update DEV environment") {
+    input "Deploy to PROD?"
     applyTerraformUpdates(
       /* accountId       */ params.ACCOUNT_ID,
       /* regionName      */ params.REGION_NAME,
@@ -91,7 +92,7 @@ node {
   }
 
   stage("Production Approval") {
-    input "Deploy to PROD?"
+    //input "Deploy to PROD?"
   }
 
   stage("Update PROD environment") {
