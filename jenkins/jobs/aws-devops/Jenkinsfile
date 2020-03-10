@@ -5,6 +5,9 @@ node {
     def image = "${ecr_url}/aws-devops-fibonacci:${tag}"
     git(url: "https://github.com/alfpedraza-aws-devops/fibonacci")
     sh """
+    echo $AWS_ACCESS_KEY_ID
+      echo $AWS_SECRET_ACCESS_KEY
+      
       aws ecr get-login-password --region ${params.REGION_NAME} | docker login --username AWS --password-stdin ${params.ECR_URL}
       docker build -t ${image} .
       docker push ${image}
@@ -46,6 +49,10 @@ node {
   stage("Update DEV environment") {
     git(url: "https://github.com/alfpedraza-aws-devops/deployment")
     sh """
+      echo $AWS_ACCESS_KEY_ID
+      echo $AWS_SECRET_ACCESS_KEY
+
+
       cd ./dev/state
       terraform init -input=false
       terraform apply -input=false -lock=true -auto-approve \
