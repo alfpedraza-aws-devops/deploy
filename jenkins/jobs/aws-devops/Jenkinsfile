@@ -41,14 +41,7 @@ node {
     git(url: "https://github.com/alfpedraza-aws-devops/deployment")
     withCredentials([usernamePassword(credentialsId: "aws_credentials", usernameVariable: "AWS_ACCESS_KEY_ID", passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
       sh """
-        cd ./dev/state
-        terraform init -input=false
-        terraform apply -input=false -lock=true -auto-approve \
-          -var "account_id=${params.ACCOUNT_ID}" \
-          -var "region_name=${params.REGION_NAME}" \
-          -var "project_name=${params.PROJECT_NAME}"
-        
-        cd ..
+        cd ./dev
         terraform init -input=false \
           -backend-config="bucket=${params.ACCOUNT_ID}-${params.PROJECT_NAME}  -dev-terraform-state" \
           -backend-config="key=terraform.tfstate" \
