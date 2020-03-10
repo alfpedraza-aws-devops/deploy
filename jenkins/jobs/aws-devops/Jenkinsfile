@@ -1,4 +1,4 @@
-def buildAndPushImage(String regionName, String gitUrl, String ecrUrl, String rawImageName, String rawImageTag, String buildId) {
+def buildAndPushImage(regionName, gitUrl, ecrUrl, rawImageName, rawImageTag, buildId) {
   def imageTag  = "${rawImageTag}.${buildId}"
   def imageName = "${ecrUrl}/${rawImageName}:${imageTag}"
   git(gitUrl)
@@ -9,8 +9,33 @@ def buildAndPushImage(String regionName, String gitUrl, String ecrUrl, String ra
     docker push ${imageName}
   """
 }
-def hello(p) {
-  echo "HelloWorld${p.message}${p.name}"
+
+def applyTerraformUpdates(accountId, regionName, projectName, environmentName) {
+  def bucketName = "${accountId}-${projectName}-${environmentName}-terraform-state"
+  def tableName  = "${accountId}-${projectName}-${environmentName}-terraform-lock"
+  git("https://github.com/alfpedraza-aws-devops/deployment")
+  withCredentials([usernamePassword(
+  credentialsId: "aws_credentials",
+  usernameVariable: "AWS_ACCESS_KEY_ID",
+  passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
+    sh """
+      cd ./${environmentName}
+      terraform init \
+        -input=false \
+        -backend-config="bucket=${bucketName}" \
+        -backend-config="key=terraform.tfstate" \
+        -backend-config="region=${regionName}" \
+        -backend-config="dynamodb_table=${tableName}" \
+        -backend-config="encrypt=true"
+      terraform apply \
+        -input=false \
+        -lock=true \
+        -auto-approve \
+        -var "account_id=${accountId}" \
+        -var "region_name=${regionName}" \
+        -var "project_name=${projectName}"
+    """
+  }
 }
 
 node {
@@ -18,66 +43,48 @@ node {
   stage("Build Fibonacci") {
     hello(message: "Alfredo", name: "Hellosdfsd")
     buildAndPushImage(
-      regionName:   params.REGION_NAME,
-      gitUrl:       "https://github.com/alfpedraza-aws-devops/fibonacci",
-      ecrUrl:       params.ECR_URL,
-      rawImageName: "aws-devops-fibonacci",
-      rawImageTag:  "0.1.4",
-      buildId:      env.BUILD_ID)
+      /* regionName   */ params.REGION_NAME,
+      /* gitUrl       */ "https://github.com/alfpedraza-aws-devops/fibonacci",
+      /* ecrUrl       */ params.ECR_URL,
+      /* rawImageName */ "aws-devops-fibonacci",
+      /* rawImageTag  */ "0.1.4",
+      /* buildId      */ env.BUILD_ID)
   }
 
   stage("Build Kubernetes API") {
     buildAndPushImage(
-      regionName:   params.REGION_NAME,
-      gitUrl:       "https://github.com/alfpedraza-aws-devops/kubernetes-api",
-      ecrUrl:       params.ECR_URL,
-      rawImageName: "aws-devops-kubernetes-api",
-      rawImageTag:  "0.1.11",
-      buildId:      env.BUILD_ID)
+      /* regionName   */ params.REGION_NAME,
+      /* gitUrl       */ "https://github.com/alfpedraza-aws-devops/kubernetes-api",
+      /* ecrUrl       */ params.ECR_URL,
+      /* rawImageName */ "aws-devops-kubernetes-api",
+      /* rawImageTag  */ "0.1.11",
+      /* buildId      */ env.BUILD_ID)
   }
 
   stage("Build Web UI") {
     buildAndPushImage(
-      regionName:   params.REGION_NAME,
-      gitUrl:       "https://github.com/alfpedraza-aws-devops/web-ui",
-      ecrUrl:       params.ECR_URL,
-      rawImageName: "aws-devops-web-ui",
-      rawImageTag:  "0.1.4",
-      buildId:      env.BUILD_ID)
+      /* regionName   */ params.REGION_NAME,
+      /* gitUrl       */ "https://github.com/alfpedraza-aws-devops/web-ui",
+      /* ecrUrl       */ params.ECR_URL,
+      /* rawImageName */ "aws-devops-web-ui",
+      /* rawImageTag  */ "0.1.4",
+      /* buildId      */ env.BUILD_ID)
   }
 
   stage("Update VPC") {
-    git("https://github.com/alfpedraza-aws-devops/deployment")
-    withCredentials([usernamePassword(
-    credentialsId: "aws_credentials",
-    usernameVariable: "AWS_ACCESS_KEY_ID",
-    passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
-      sh """
-        cd ./vpc
-        ./jenkins/jobs/aws-devops/apply-terraform.sh \
-          ${params.ACCOUNT_ID} \
-          ${params.REGION_NAME} \
-          ${params.PROJECT_NAME} \
-          "vpc"
-      """
-    }
+    applyTerraformUpdates(
+      /* accountId       */ params.ACCOUNT_ID,
+      /* regionName      */ params.REGION_NAME,
+      /* projectName     */ params.PROJECT_NAME,
+      /* environmentName */ "vpc")
   }
 
   stage("Update DEV environment") {
-    git("https://github.com/alfpedraza-aws-devops/deployment")
-    withCredentials([usernamePassword(
-    credentialsId: "aws_credentials",
-    usernameVariable: "AWS_ACCESS_KEY_ID",
-    passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
-      sh """
-        cd ./dev
-        ./jenkins/jobs/aws-devops/apply-terraform.sh \
-          ${params.ACCOUNT_ID} \
-          ${params.REGION_NAME} \
-          ${params.PROJECT_NAME} \
-          "dev"
-      """
-    }
+    applyTerraformUpdates(
+      /* accountId       */ params.ACCOUNT_ID,
+      /* regionName      */ params.REGION_NAME,
+      /* projectName     */ params.PROJECT_NAME,
+      /* environmentName */ "dev")
   }
 
   stage("Deploy to DEV environment") {
@@ -89,20 +96,11 @@ node {
   }
 
   stage("Update PROD environment") {
-    git("https://github.com/alfpedraza-aws-devops/deployment")
-    withCredentials([usernamePassword(
-    credentialsId: "aws_credentials",
-    usernameVariable: "AWS_ACCESS_KEY_ID",
-    passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
-      sh """
-        cd ./prod
-        ./jenkins/jobs/aws-devops/apply-terraform.sh \
-          ${params.ACCOUNT_ID} \
-          ${params.REGION_NAME} \
-          ${params.PROJECT_NAME} \
-          "prod"
-      """
-    }
+    applyTerraformUpdates(
+      /* accountId       */ params.ACCOUNT_ID,
+      /* regionName      */ params.REGION_NAME,
+      /* projectName     */ params.PROJECT_NAME,
+      /* environmentName */ "prod")
   }
 
   stage("Deploy to PROD environment") {
