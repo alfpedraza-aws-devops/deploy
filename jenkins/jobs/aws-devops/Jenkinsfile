@@ -9,14 +9,14 @@ def buildAndPushImage(String regionName, String gitUrl, String ecrUrl, String ra
     docker push ${imageName}
   """
 }
-def hello() {
-  echo "HelloWorld"
+def hello(message) {
+  echo "HelloWorld${message}"
 }
 
 node {
 
   stage("Build Fibonacci") {
-    hello()
+    hello(message: "Alfredo")
     buildAndPushImage(
       regionName:   params.REGION_NAME,
       gitUrl:       "https://github.com/alfpedraza-aws-devops/fibonacci",
