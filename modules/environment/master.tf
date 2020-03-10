@@ -107,7 +107,17 @@ resource "aws_security_group_rule" "master_ingress_04" {
   protocol                 = "tcp"
   source_security_group_id = data.terraform_remote_state.vpc.outputs.nat_gateway_security_group_id
 }
-  
+
+resource "aws_security_group_rule" "master_ingress_04a" {
+  security_group_id        = aws_security_group.master.id
+  type                     = "ingress"
+  description              = "Kubernetes API Server Port"
+  from_port                = 6443
+  to_port                  = 6443
+  protocol                 = "tcp"
+  source_security_group_id = data.terraform_remote_state.jenkins.outputs.jenkins_security_group_id
+}
+
 resource "aws_security_group_rule" "master_ingress_05" {
   security_group_id        = aws_security_group.master.id
   type                     = "ingress"
