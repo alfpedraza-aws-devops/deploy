@@ -41,7 +41,6 @@ def applyTerraformUpdates(accountId, regionName, projectName, environmentName) {
 node {
 
   stage("Build Fibonacci") {
-    hello(message: "Alfredo", name: "Hellosdfsd")
     buildAndPushImage(
       /* regionName   */ params.REGION_NAME,
       /* gitUrl       */ "https://github.com/alfpedraza-aws-devops/fibonacci",
