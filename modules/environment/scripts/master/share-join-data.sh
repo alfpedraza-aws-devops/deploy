@@ -46,11 +46,6 @@ function create_s3_bucket() {
         --region $PRIVATE_REGION_NAME \
         --server-side-encryption-configuration \
             '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
-    aws s3api put-bucket-versioning \
-        --bucket $PRIVATE_BUCKET_NAME \
-        --region $PRIVATE_REGION_NAME \
-        --versioning-configuration \
-            '{"MFADelete":"Disabled","Status":"Enabled"}'
 }
 
 function upload_join_data() {
