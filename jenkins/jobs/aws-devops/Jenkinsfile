@@ -35,8 +35,6 @@ node {
 
   environment {
     AWS_CREDS = credentials("aws_credentials")
-    AWS_ACCESS_KEY_ID = AWS_CREDS_USR
-    AWS_SECRET_ACCESS_KEY = AWS_CREDS_PSW
   }
 
   stage("Update VPC") {
@@ -47,8 +45,10 @@ node {
     git(url: "https://github.com/alfpedraza-aws-devops/deployment")
     sh """
       echo "Before error"
-      echo "${AWS_ACCESS_KEY_ID}"
-      echo "${AWS_SECRET_ACCESS_KEY}"
+      export AWS_ACCESS_KEY_ID="${AWS_CREDS_USR}"
+      export AWS_SECRET_ACCESS_KEY="${AWS_CREDS_PSW}"
+      echo $AWS_ACCESS_KEY_ID
+      echo $AWS_SECRET_ACCESS_KEY
       echo "After error"
 
       cd ./dev/state
