@@ -29,7 +29,7 @@ resource "aws_instance" "jenkins" {
                            "REGION_NAME=${var.region_name}",
                            "PROJECT_NAME=${var.project_name}",
                            "BUCKET_NAME=${var.bucket_name}",
-                           "ECR_URL=${split('/', aws_ecr_repository.repositories[0].repository_url)[0]}",
+                           "ECR_URL=${split("/", aws_ecr_repository.repositories["aws-devops-web-ui"].repository_url)[0]}",
                            file("${path.module}/scripts/setup-jenkins.sh")])
 
   tags = merge(local.common_tags, map(

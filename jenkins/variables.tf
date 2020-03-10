@@ -29,7 +29,7 @@ variable "bucket_name" {
 variable "server_instance_type" {
   description = "The instance type for the Jenkins server"
   type = string
-  default = "t2.micro"
+  default = "t2.medium"
 }
 
 locals {

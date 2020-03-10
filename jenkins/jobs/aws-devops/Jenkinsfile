@@ -28,7 +28,7 @@ node {
   }
 
   stage("Update VPC") {
-    echo "Update DEV environment"
+    echo "Update VPC environment"
   }
 
   stage("Update DEV environment") {

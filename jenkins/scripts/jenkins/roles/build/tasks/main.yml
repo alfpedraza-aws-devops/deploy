@@ -44,7 +44,7 @@
   uri:
     method: "POST"
     headers: '{"{{ jenkins_crumb.json.crumbRequestField }}":"{{ jenkins_crumb.json.crumb }}","Cookie":"{{ jenkins_crumb.set_cookie }}"}'
-    url: "http://localhost:8080/job/{{ jenkins_job_name }}/build"
+    url: "http://localhost:8080/job/{{ jenkins_job_name }}/buildWithParameters"
     force_basic_auth: yes
     user: admin
     password: "{{ jenkins_admin_password }}"
