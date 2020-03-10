@@ -1,4 +1,4 @@
-def buildAndPushImage(regionName, gitUrl, ecrUrl, rawImageName, rawImageTag, buildId) {
+def buildAndPushImage(String regionName, String gitUrl, String ecrUrl, String rawImageName, String rawImageTag, String buildId) {
   def imageTag  = "${rawImageTag}.${buildId}"
   def imageName = "${ecrUrl}/${rawImageName}:${imageTag}"
   git(gitUrl)
