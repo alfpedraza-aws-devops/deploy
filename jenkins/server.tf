@@ -26,6 +26,7 @@ resource "aws_instance" "jenkins" {
   iam_instance_profile   = aws_iam_instance_profile.jenkins.name
   user_data              = join("\n", [
                            "#!/bin/bash",
+                           "ACCOUNT_ID=${var.account_id}",
                            "REGION_NAME=${var.region_name}",
                            "PROJECT_NAME=${var.project_name}",
                            "BUCKET_NAME=${var.bucket_name}",
