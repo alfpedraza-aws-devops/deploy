@@ -46,9 +46,10 @@ node {
   stage("Update DEV environment") {
     git(url: "https://github.com/alfpedraza-aws-devops/deployment")
     sh """
-      echo $AWS_ACCESS_KEY_ID
-      echo $AWS_SECRET_ACCESS_KEY
-
+      echo "Before error"
+      echo ${env.AWS_ACCESS_KEY_ID}
+      echo ${env.AWS_SECRET_ACCESS_KEY}
+      echo "After error"
 
       cd ./dev/state
       terraform init -input=false
