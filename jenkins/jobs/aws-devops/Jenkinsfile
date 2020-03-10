@@ -1,57 +1,65 @@
 node {
 
   stage("Build Fibonacci") {
-    def tag = "0.1.4.${env.BUILD_ID}"
-    def image = "${ecr_url}/aws-devops-fibonacci:${tag}"
-    git(url: "https://github.com/alfpedraza-aws-devops/fibonacci")
     sh """
-      aws ecr get-login-password --region ${params.REGION_NAME} | docker login --username AWS --password-stdin ${params.ECR_URL}
-      docker build -t ${image} .
-      docker push ${image}
+      git clone --depth 1 "https://github.com/alfpedraza-aws-devops/fibonacci"
+      ./jenkins/jobs/aws-devops/build-image.sh \
+        ${params.REGION_NAME} \
+        ${params.ECR_URL} \
+        "aws-devops-fibonacci" \
+        "0.1.4" \
+        ${env.BUILD_ID}
     """
   }
 
   stage("Build Kubernetes API") {
-    def tag = "0.1.11.${env.BUILD_ID}"
-    def image = "${ecr_url}/aws-devops-kubernetes-api:${tag}"
-    git(url: "https://github.com/alfpedraza-aws-devops/kubernetes-api")
     sh """
-      aws ecr get-login-password --region ${params.REGION_NAME} | docker login --username AWS --password-stdin ${params.ECR_URL}
-      docker build -t ${image} .
-      docker push ${image}
+      git clone --depth 1 "https://github.com/alfpedraza-aws-devops/kubernetes-api"
+      ./jenkins/jobs/aws-devops/build-image.sh \
+        ${params.REGION_NAME} \
+        ${params.ECR_URL} \
+        "aws-devops-kubernetes-api" \
+        "0.1.11" \
+        ${env.BUILD_ID}
     """
   }
 
   stage("Build Web UI") {
-    def tag = "0.1.4.${env.BUILD_ID}"
-    def image = "${ecr_url}/aws-devops-web-ui:${tag}"
-    git(url: "https://github.com/alfpedraza-aws-devops/web-ui")
     sh """
-      aws ecr get-login-password --region ${params.REGION_NAME} | docker login --username AWS --password-stdin ${params.ECR_URL}
-      docker build -t ${image} .
-      docker push ${image}
+      git clone --depth 1 "https://github.com/alfpedraza-aws-devops/web-ui"
+      ./jenkins/jobs/aws-devops/build-image.sh \
+        ${params.REGION_NAME} \
+        ${params.ECR_URL} \
+        "aws-devops-web-ui" \
+        "0.1.4" \
+        ${env.BUILD_ID}
     """
   }
 
   stage("Update VPC") {
-    
+    withCredentials([usernamePassword(credentialsId: "aws_credentials", usernameVariable: "AWS_ACCESS_KEY_ID", passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
+      sh """
+        git clone --depth 1 "https://github.com/alfpedraza-aws-devops/deployment"
+        cd ./vpc
+        ./jenkins/jobs/aws-devops/apply-terraform.sh \
+          ${params.ACCOUNT_ID} \
+          ${params.REGION_NAME} \
+          ${params.PROJECT_NAME} \
+          "vpc"
+      """
+    }
   }
 
   stage("Update DEV environment") {
-    git(url: "https://github.com/alfpedraza-aws-devops/deployment")
     withCredentials([usernamePassword(credentialsId: "aws_credentials", usernameVariable: "AWS_ACCESS_KEY_ID", passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
       sh """
-        cd ./dev
-        terraform init -input=false \
-          -backend-config="bucket=${params.ACCOUNT_ID}-${params.PROJECT_NAME}  -dev-terraform-state" \
-          -backend-config="key=terraform.tfstate" \
-          -backend-config="region=${params.REGION_NAME}" \
-          -backend-config="dynamodb_table=${params.ACCOUNT_ID}-${params.PROJECT_NAME}  -dev-terraform-lock" \
-          -backend-config="encrypt=true"
-        terraform apply -input=false -lock=true -auto-approve \
-          -var "account_id=${params.ACCOUNT_ID}" \
-          -var "region_name=${params.REGION_NAME}" \
-          -var "project_name=${params.PROJECT_NAME}"
+        git clone --depth 1 "https://github.com/alfpedraza-aws-devops/deployment"
+        cd ./vpc
+        ./jenkins/jobs/aws-devops/apply-terraform.sh \
+          ${params.ACCOUNT_ID} \
+          ${params.REGION_NAME} \
+          ${params.PROJECT_NAME} \
+          "dev"
       """
     }
   }
@@ -61,11 +69,21 @@ node {
   }
 
   stage("Production Approval") {
-    //input "Deploy to PROD?"
+    input "Deploy to PROD?"
   }
 
   stage("Update PROD environment") {
-    echo "Update PROD environment"
+    withCredentials([usernamePassword(credentialsId: "aws_credentials", usernameVariable: "AWS_ACCESS_KEY_ID", passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
+      sh """
+        git clone --depth 1 "https://github.com/alfpedraza-aws-devops/deployment"
+        cd ./vpc
+        ./jenkins/jobs/aws-devops/apply-terraform.sh \
+          ${params.ACCOUNT_ID} \
+          ${params.REGION_NAME} \
+          ${params.PROJECT_NAME} \
+          "prod"
+      """
+    }
   }
 
   stage("Deploy to PROD environment") {
