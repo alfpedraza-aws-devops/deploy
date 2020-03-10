@@ -1,39 +1,45 @@
+def buildAndPushImage(regionName, gitUrl, ecrUrl, rawImageName, rawImageTag, buildId) {
+  def imageTag  = "${rawImageTag}.${buildId}"
+  def imageName = "${ecrUrl}/${rawImageName}:${imageTag}"
+  git(gitUrl)
+  sh """
+    aws ecr get-login-password --region ${regionName} | \
+    docker login --username AWS --password-stdin ${ecrUrl}
+    docker build -t ${imageName} .
+    docker push ${imageName}
+  """
+}
+
 node {
 
   stage("Build Fibonacci") {
-    git("https://github.com/alfpedraza-aws-devops/fibonacci")
-    sh """
-      ./jenkins/jobs/aws-devops/build-image.sh \
-        ${params.REGION_NAME} \
-        ${params.ECR_URL} \
-        "aws-devops-fibonacci" \
-        "0.1.4" \
-        ${env.BUILD_ID}
-    """
+    buildAndPushImage(
+      regionName:   params.REGION_NAME,
+      gitUrl:       "https://github.com/alfpedraza-aws-devops/fibonacci",
+      ecrUrl:       params.ECR_URL,
+      rawImageName: "aws-devops-fibonacci",
+      rawImageTag:  "0.1.4",
+      buildId:      env.BUILD_ID)
   }
 
   stage("Build Kubernetes API") {
-    git("https://github.com/alfpedraza-aws-devops/kubernetes-api")
-    sh """
-      ./jenkins/jobs/aws-devops/build-image.sh \
-        ${params.REGION_NAME} \
-        ${params.ECR_URL} \
-        "aws-devops-kubernetes-api" \
-        "0.1.11" \
-        ${env.BUILD_ID}
-    """
+    buildAndPushImage(
+      regionName:   params.REGION_NAME,
+      gitUrl:       "https://github.com/alfpedraza-aws-devops/kubernetes-api",
+      ecrUrl:       params.ECR_URL,
+      rawImageName: "aws-devops-kubernetes-api",
+      rawImageTag:  "0.1.11",
+      buildId:      env.BUILD_ID)
   }
 
   stage("Build Web UI") {
-    git("https://github.com/alfpedraza-aws-devops/web-ui")
-    sh """
-      ./jenkins/jobs/aws-devops/build-image.sh \
-        ${params.REGION_NAME} \
-        ${params.ECR_URL} \
-        "aws-devops-web-ui" \
-        "0.1.4" \
-        ${env.BUILD_ID}
-    """
+    buildAndPushImage(
+      regionName:   params.REGION_NAME,
+      gitUrl:       "https://github.com/alfpedraza-aws-devops/web-ui",
+      ecrUrl:       params.ECR_URL,
+      rawImageName: "aws-devops-web-ui",
+      rawImageTag:  "0.1.4",
+      buildId:      env.BUILD_ID)
   }
 
   stage("Update VPC") {
