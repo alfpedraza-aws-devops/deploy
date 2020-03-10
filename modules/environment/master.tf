@@ -29,6 +29,7 @@ resource "aws_instance" "master" {
                            file("${path.module}/scripts/metadata.sh"),
                            "GLOBAL_CLUSTER_NAME=${var.project_name}",
                            "GLOBAL_NODE_ROLE_NAME=${aws_iam_role.node.name}",
+                           "GLOBAL_JENKINS_ROLE_NAME=${var.project_name}-${var.region_name}-jenkins",
                            "GLOBAL_CLUSTER_AUTOSCALER_ROLE_NAME=${aws_iam_role.cluster_autoscaler.name}",
                            "GLOBAL_MASTER_NAME=${var.project_name}-private-${var.environment_name}-master",
                            file("${path.module}/scripts/dependencies.sh"),
