@@ -31,6 +31,24 @@
           <defaultValue>{{ aws_ecr_url }}</defaultValue>
           <trim>false</trim>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>FIBONACCI_IMAGE_TAG</name>
+          <description></description>
+          <defaultValue>0.1.4</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>KUBERNETESAPI_IMAGE_TAG</name>
+          <description></description>
+          <defaultValue>0.1.11</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>WEBUI_IMAGE_TAG</name>
+          <description></description>
+          <defaultValue>0.1.4</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
