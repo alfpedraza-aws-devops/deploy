@@ -24,6 +24,9 @@ resource "aws_instance" "nat_gateway" {
   vpc_security_group_ids = [aws_security_group.nat_gateway.id]
   source_dest_check      = false
 
+  root_block_device {
+    delete_on_termination = true
+  }
   tags = merge(local.common_tags, map(
     "Name", "${var.project_name}-public-nat-gateway"
   ))

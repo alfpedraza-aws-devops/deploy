@@ -33,6 +33,9 @@ resource "aws_instance" "jenkins" {
                            "ECR_URL=${split("/", aws_ecr_repository.repositories["aws-devops-web-ui"].repository_url)[0]}",
                            file("${path.module}/scripts/setup-jenkins.sh")])
 
+  root_block_device {
+    delete_on_termination = true
+  }
   tags = merge(local.common_tags, map(
     "Name", "${var.project_name}-private-jenkins"
   ))

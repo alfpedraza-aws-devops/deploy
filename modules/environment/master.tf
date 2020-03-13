@@ -39,14 +39,16 @@ resource "aws_instance" "master" {
                            file("${path.module}/scripts/master/install-plugins.sh"),
                            file("${path.module}/scripts/master/main.sh")])
 
+  lifecycle {
+    ignore_changes = [tags]
+  }
+  root_block_device {
+    delete_on_termination = true
+  }
   tags = merge(local.common_tags, map(
     "Name", "${var.project_name}-private-${var.environment_name}-master",
     "kubernetes.io/cluster/${var.project_name}", "owned"
   ))
-  
-  lifecycle {
-    ignore_changes = [tags]
-  }
 }
 
 # ----------------------------------------------------------------------------#

@@ -19,8 +19,12 @@ resource "aws_launch_configuration" "node" {
                          file("${path.module}/scripts/nodes/join-cluster.sh"),
                          file("${path.module}/scripts/nodes/install-plugins.sh"),
                          file("${path.module}/scripts/nodes/main.sh")])
+  
   lifecycle {
     create_before_destroy = true
+  }
+  root_block_device {
+    delete_on_termination = true
   }
 }
 
