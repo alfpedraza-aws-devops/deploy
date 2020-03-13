@@ -45,5 +45,3 @@
   until: jenkins_job_setup is not failed
   retries: 30
   delay: 6
-
-- debug: var=jenkins_job_setup
