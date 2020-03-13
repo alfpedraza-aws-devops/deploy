@@ -4,7 +4,7 @@
 # ----------------------------------------------------------------------------#
 
 resource "aws_launch_configuration" "node" {
-  name                 = "${var.project_name}-private-${var.environment_name}-node"
+  name_prefix          = "${var.project_name}-private-${var.environment_name}-node-"
   image_id             = data.aws_ami.cluster_image.id
   instance_type        = var.node_instance_type
   key_name             = data.terraform_remote_state.vpc.outputs.key_name
@@ -19,6 +19,9 @@ resource "aws_launch_configuration" "node" {
                          file("${path.module}/scripts/nodes/join-cluster.sh"),
                          file("${path.module}/scripts/nodes/install-plugins.sh"),
                          file("${path.module}/scripts/nodes/main.sh")])
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # ----------------------------------------------------------------------------#
@@ -27,7 +30,7 @@ resource "aws_launch_configuration" "node" {
 
 resource "aws_autoscaling_group" "nodes" {
   name                 = "${var.project_name}-private-${var.environment_name}-nodes"
-  launch_configuration = aws_launch_configuration.node.id
+  launch_configuration = aws_launch_configuration.node.name
   min_size             = var.worker_node_count
   max_size             = var.worker_node_count
   vpc_zone_identifier  = [aws_subnet.private_environment.id]
@@ -37,6 +40,9 @@ resource "aws_autoscaling_group" "nodes" {
     map("key", "kubernetes.io/cluster/${var.project_name}", "value", "owned", "propagate_at_launch", true),
     map("key", "k8s.io/cluster-autoscaler/enabled", "value", "1", "propagate_at_launch", true)
   ))
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # Export the local.common_tags values as the type that the autoscaling group
