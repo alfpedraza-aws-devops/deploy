@@ -56,6 +56,16 @@
     groups: [docker]
     append: yes
 
+- name: Wait for plugins to be installed
+  uri:
+    url: "http://localhost:8080/updateCenter/installStatus"
+    return_content: yes
+    body_format: json
+  register: plugin_status
+  until: "'Pending' not in plugin_status.json.data.jobs|map(attribute='installStatus')"
+  retries: 30
+  delay: 10
+
 - name: Restart the Jenkins service to apply all the changes
   service:
     name: jenkins
