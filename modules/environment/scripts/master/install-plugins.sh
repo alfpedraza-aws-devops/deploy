@@ -1,5 +1,5 @@
 function wait_for_node_ready() {
-    # Wait until at least worker node is described in the cluster as ready.
+    # Wait until at least one worker node is described in the cluster as ready.
     for i in {1..40}; do
         local NODES="$(kubectl get nodes)"
         set +exuo pipefail; 

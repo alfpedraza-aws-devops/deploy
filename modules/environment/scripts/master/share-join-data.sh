@@ -31,7 +31,9 @@ function create_s3_bucket() {
         --region $PRIVATE_REGION_NAME \
         --create-bucket-configuration \
             LocationConstraint=$PRIVATE_REGION_NAME
-    sleep 2
+    aws s3api wait bucket-exists
+        --bucket $BUCKET_NAME
+        --region $REGION_NAME
     aws s3api put-public-access-block \
         --bucket $PRIVATE_BUCKET_NAME \
         --region $PRIVATE_REGION_NAME \
