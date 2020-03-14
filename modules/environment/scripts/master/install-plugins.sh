@@ -53,7 +53,7 @@ function install_cluster_autoscaler() {
     local IAM_ROLE=$GLOBAL_CLUSTER_AUTOSCALER_ROLE_NAME
     local BASE_ROLE_ARN="arn:aws:iam::$ACCOUNT_ID:role/"
 
-    helm repo add alfpedraza https://alfpedraza-aws-devops.github.io/helm-repository/
+    helm repo add alfpedraza https://alfpedraza-aws-devops.github.io/infrastructure/helm-repository/
     helm install \
         alfpedraza/cluster-autoscaler \
         --name cluster-autoscaler \
