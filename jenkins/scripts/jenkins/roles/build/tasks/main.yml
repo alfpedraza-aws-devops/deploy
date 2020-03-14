@@ -1,46 +1,49 @@
 ---
 # Start the server and wait intil is ready.
 
-- name: Start the Jenkins service so the build can run
-  service:
-    name: jenkins
-    enabled: yes
-    state: started
-  when: jenkins_job_setup_changed
+- name: Execute only when job setup changed
+  block:
+    
+  - name: Start the Jenkins service so the build can run
+    service:
+      name: jenkins
+      enabled: yes
+      state: started
+    register: jenkins_started
 
-- name: Wait until the Jenkins service is available
-  uri:
-    url: "http://localhost:8080/"
-    force_basic_auth: yes
-    user: admin
-    password: "{{ jenkins_admin_password }}"
-    return_content: yes
-    status_code: [200, 404]
-  register: jenkins_wait
-  until: jenkins_wait.status == 200 and jenkins_wait.content.find("Please wait while Jenkins is getting ready to work") == -1
-  retries: 30
-  delay: 6
-  when: jenkins_job_setup_changed
+  - name: Wait until the Jenkins service is available
+    uri:
+      url: "http://localhost:8080/"
+      force_basic_auth: yes
+      user: admin
+      password: "{{ jenkins_admin_password }}"
+      return_content: yes
+      status_code: [200, 404]
+    register: jenkins_wait
+    until: jenkins_wait.status == 200 and jenkins_wait.content.find("Please wait while Jenkins is getting ready to work") == -1
+    retries: 30
+    delay: 6
+    when: jenkins_started.changed
 
-# Run the Jenkins pipeline
+  # Run the Jenkins pipeline
 
-- name: Get the Jenkins crumb. Required to post data to the Jenkins server.
-  uri:
-    url: http://localhost:8080/crumbIssuer/api/json
-    force_basic_auth: yes
-    user: admin
-    password: "{{ jenkins_admin_password }}"
-    return_content: yes
-  register: jenkins_crumb
-  when: jenkins_job_setup_changed
+  - name: Get the Jenkins crumb. Required to post data to the Jenkins server.
+    uri:
+      url: http://localhost:8080/crumbIssuer/api/json
+      force_basic_auth: yes
+      user: admin
+      password: "{{ jenkins_admin_password }}"
+      return_content: yes
+    register: jenkins_crumb
 
-- name: Run the pipeline build
-  uri:
-    method: "POST"
-    headers: '{"{{ jenkins_crumb.json.crumbRequestField }}":"{{ jenkins_crumb.json.crumb }}","Cookie":"{{ jenkins_crumb.set_cookie }}"}'
-    url: "http://localhost:8080/job/{{ jenkins_job_name }}/buildWithParameters"
-    force_basic_auth: yes
-    user: admin
-    password: "{{ jenkins_admin_password }}"
-    status_code: [201]
+  - name: Run the pipeline build
+    uri:
+      method: "POST"
+      headers: '{"{{ jenkins_crumb.json.crumbRequestField }}":"{{ jenkins_crumb.json.crumb }}","Cookie":"{{ jenkins_crumb.set_cookie }}"}'
+      url: "http://localhost:8080/job/{{ jenkins_job_name }}/buildWithParameters"
+      force_basic_auth: yes
+      user: admin
+      password: "{{ jenkins_admin_password }}"
+      status_code: [201]
+
   when: jenkins_job_setup_changed

@@ -48,6 +48,8 @@
   jenkins_job:
     name: "{{ jenkins_job_name }}"
     config: "{{ lookup('template', 'templates/job-config.xml.j2') }}"
+    user: admin
+    password: "{{ jenkins_admin_password }}"
     state: present
   register: jenkins_job_setup
   until: jenkins_job_setup is not failed

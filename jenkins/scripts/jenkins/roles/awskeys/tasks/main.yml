@@ -6,6 +6,7 @@
     name: jenkins
     enabled: yes
     state: started
+  register: jenkins_started
 
 - name: Wait until the Jenkins service is available
   uri:
@@ -19,6 +20,7 @@
   until: jenkins_wait.status == 200 and jenkins_wait.content.find("Please wait while Jenkins is getting ready to work") == -1
   retries: 30
   delay: 6
+  when: jenkins_started.changed
 
 # Store the AWS credentials if not present
 
@@ -39,6 +41,7 @@
     password: "{{ jenkins_admin_password }}"
     return_content: yes
   register: jenkins_crumb
+  when: jenkins_aws_credentials.status == 404
 
 - name: Store the AWS CLI AWS_ACCESS_KEY_ID as a Jenkins secret
   uri:
