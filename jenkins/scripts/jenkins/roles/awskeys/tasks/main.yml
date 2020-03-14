@@ -1,0 +1,67 @@
+---
+# Start the server and wait intil is ready.
+
+- name: Start the Jenkins service so the aws secrets can be stored
+  service:
+    name: jenkins
+    enabled: yes
+    state: started
+
+- name: Wait until the Jenkins service is available
+  uri:
+    url: "http://localhost:8080/"
+    force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
+    return_content: yes
+    status_code: [200, 404]
+  register: jenkins_wait
+  until: jenkins_wait.status == 200 and jenkins_wait.content.find("Please wait while Jenkins is getting ready to work") == -1
+  retries: 30
+  delay: 6
+
+# Store the AWS credentials if not present
+
+- name: Check if the AWS CLI credentials are already stored in Jenkins
+  uri:
+    url: http://localhost:8080/credentials/store/system/domain/_/credential/AWS_ACCESS_KEY_ID/config.xml
+    force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
+    status_code: [200, 404]
+  register: jenkins_aws_credentials
+
+- name: Get the Jenkins crumb. Required to post data to the Jenkins server.
+  uri:
+    url: http://localhost:8080/crumbIssuer/api/json
+    force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
+    return_content: yes
+  register: jenkins_crumb
+
+- name: Store the AWS CLI AWS_ACCESS_KEY_ID as a Jenkins secret
+  uri:
+    method: "POST"
+    headers: '{"{{ jenkins_crumb.json.crumbRequestField }}":"{{ jenkins_crumb.json.crumb }}","Cookie":"{{ jenkins_crumb.set_cookie }}"}'
+    url: "http://localhost:8080/credentials/store/system/domain/_/createCredentials"
+    body_format: form-urlencoded
+    body: "{{ lookup('template', 'templates/AWS_ACCESS_KEY_ID.json.j2') }}"
+    force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
+    status_code: [201, 302]
+  when: jenkins_aws_credentials.status == 404
+
+- name: Store the AWS CLI AWS_SECRET_ACCESS_KEY as a Jenkins secret
+  uri:
+    method: "POST"
+    headers: '{"{{ jenkins_crumb.json.crumbRequestField }}":"{{ jenkins_crumb.json.crumb }}","Cookie":"{{ jenkins_crumb.set_cookie }}"}'
+    url: "http://localhost:8080/credentials/store/system/domain/_/createCredentials"
+    body_format: form-urlencoded
+    body: "{{ lookup('template', 'templates/AWS_SECRET_ACCESS_KEY.json.j2') }}"
+    force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
+    status_code: [201, 302]
+  when: jenkins_aws_credentials.status == 404

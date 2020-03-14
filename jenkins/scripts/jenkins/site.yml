@@ -14,8 +14,9 @@
   # Install and setup the Jenkins package and plugins
   - initscripts
   - jenkins
-  - plugins
-  - job
   - credentials
   - security
+  - plugins
+  - job
+  - awskeys
   - build

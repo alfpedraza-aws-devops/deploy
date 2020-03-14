@@ -11,9 +11,10 @@
 
 # Setup an admin user and its password for Jenkins
 
-- name: Get the hash value for the jenkins admin password
-  shell: "echo -n '{{ jenkins_admin_password }}{salt_value}' | sha256sum - | awk '{ print $1; }'"
-  register: jenkins_password_hash
+- name: Check if the admin user folder is already created
+  stat:
+    path: "~jenkins/users/admin"
+  register: admin_user_folder
 
 - name: Create the admin folder under the Jenkins users folder
   file:
@@ -23,12 +24,17 @@
     mode: "0755"
     recurse: yes
     state: directory
+  when: admin_user_folder.stat.exists == false
+
+- name: Get the hash value for the jenkins admin password
+  shell: "echo -n '{{ jenkins_admin_password }}{salt_value}' | sha256sum - | awk '{ print $1; }'"
+  register: jenkins_password_hash
 
 - name: Generate the admin user configuration file from the template
   template:
     src: "admin-config.xml.j2"
     dest: "~jenkins/users/admin/config.xml"
-    force: no
+    force: yes
   register: jenkins_admin_config
     
 - name: Restart the Jenkins service if any file changed

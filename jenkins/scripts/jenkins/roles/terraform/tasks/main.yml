@@ -1,10 +1,16 @@
 ---
 # Install the Terraform command line tool
 
+- name: Check if helm is already installed
+  stat:
+    path: /usr/local/bin/terraform
+  register: terraform_binary
+
 - name: Create a temporal folder to download the terraform zip file
   file:
     path: /tmp/aws-devops/terraform
     state: directory
+  when: terraform_binary.stat.exists == false
 
 - name: Download the terraform zip file and unzip it
   unarchive:

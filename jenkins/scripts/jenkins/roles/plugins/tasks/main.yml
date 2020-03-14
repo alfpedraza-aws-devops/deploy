@@ -6,16 +6,21 @@
     name: jenkins
     enabled: yes
     state: started
+  register: jenkins_started
 
 - name: Wait until the Jenkins service is available
   uri:
     url: "http://localhost:8080/"
+    force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
     return_content: yes
     status_code: [200, 404]
   register: jenkins_wait
   until: jenkins_wait.status == 200 and jenkins_wait.content.find('Please wait while Jenkins is getting ready to work') == -1
   retries: 30
   delay: 6
+  when: jenkins_started.changed
 
 - name: Install the "git" Jenkins plugin. Required to checkout code
   jenkins_plugin:
@@ -55,19 +60,31 @@
     name: jenkins
     groups: [docker]
     append: yes
+    state: present
+
+- name: Check if any plugin was updated
+  set_fact:
+    any_jenkins_plugin_changed: >
+      jenkins_git_plugin.changed or jenkins_job_dsl_plugin.changed or
+      jenkins_wfa_plugin.changed or jenkins_wfc_plugin.changed
 
 - name: Wait for plugins to be installed
   uri:
     url: "http://localhost:8080/updateCenter/installStatus"
+    force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
     return_content: yes
     body_format: json
   register: plugin_status
   until: "'Pending' not in plugin_status.json.data.jobs|map(attribute='installStatus')"
   retries: 30
   delay: 10
+  when: any_jenkins_plugin_changed
 
 - name: Restart the Jenkins service to apply all the changes
   service:
     name: jenkins
     enabled: yes
     state: restarted
+  when: any_jenkins_plugin_changed

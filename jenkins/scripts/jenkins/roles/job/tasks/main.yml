@@ -17,6 +17,9 @@
   yum:
     name: python-jenkins-0.4.14-2.el7.noarch
     state: present
+  register: python_jenkins_package
+  until: python_jenkins_package is not failed
+  retries: 5
 
 # Install the Jenkins job
 
@@ -25,16 +28,21 @@
     name: jenkins
     enabled: yes
     state: started
+  register: jenkins_started
 
 - name: Wait until the Jenkins service is available
   uri:
     url: "http://localhost:8080/"
+    force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
     return_content: yes
     status_code: [200, 404]
   register: jenkins_wait
   until: jenkins_wait.status == 200 and jenkins_wait.content.find('Please wait while Jenkins is getting ready to work') == -1
   retries: 30
   delay: 6
+  when: jenkins_started.changed
 
 - name: Create a Jenkins job to run a pipeline
   jenkins_job:
@@ -45,3 +53,7 @@
   until: jenkins_job_setup is not failed
   retries: 30
   delay: 6
+
+- name: Store the status of the job setup task
+  set_fact:
+    jenkins_job_setup_changed: jenkins_job_setup.changed

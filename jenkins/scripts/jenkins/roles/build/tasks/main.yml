@@ -6,18 +6,23 @@
     name: jenkins
     enabled: yes
     state: started
+  when: jenkins_job_setup_changed
 
 - name: Wait until the Jenkins service is available
   uri:
     url: "http://localhost:8080/"
+    force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
     return_content: yes
-    status_code: [200, 403, 404]
+    status_code: [200, 404]
   register: jenkins_wait
-  until: jenkins_wait.status == 403 and jenkins_wait.content.find("Please wait while Jenkins is getting ready to work") == -1
+  until: jenkins_wait.status == 200 and jenkins_wait.content.find("Please wait while Jenkins is getting ready to work") == -1
   retries: 30
   delay: 6
+  when: jenkins_job_setup_changed
 
-# Store the AWS credentials and run the pipeline
+# Run the Jenkins pipeline
 
 - name: Get the Jenkins crumb. Required to post data to the Jenkins server.
   uri:
@@ -27,30 +32,7 @@
     password: "{{ jenkins_admin_password }}"
     return_content: yes
   register: jenkins_crumb
-
-- name: Store the AWS CLI AWS_ACCESS_KEY_ID as a Jenkins secret
-  uri:
-    method: "POST"
-    headers: '{"{{ jenkins_crumb.json.crumbRequestField }}":"{{ jenkins_crumb.json.crumb }}","Cookie":"{{ jenkins_crumb.set_cookie }}"}'
-    url: "http://localhost:8080/credentials/store/system/domain/_/createCredentials"
-    body_format: form-urlencoded
-    body: "{{ lookup('template', 'templates/AWS_ACCESS_KEY_ID.json.j2') }}"
-    force_basic_auth: yes
-    user: admin
-    password: "{{ jenkins_admin_password }}"
-    status_code: [201, 302]
-
-- name: Store the AWS CLI AWS_SECRET_ACCESS_KEY as a Jenkins secret
-  uri:
-    method: "POST"
-    headers: '{"{{ jenkins_crumb.json.crumbRequestField }}":"{{ jenkins_crumb.json.crumb }}","Cookie":"{{ jenkins_crumb.set_cookie }}"}'
-    url: "http://localhost:8080/credentials/store/system/domain/_/createCredentials"
-    body_format: form-urlencoded
-    body: "{{ lookup('template', 'templates/AWS_SECRET_ACCESS_KEY.json.j2') }}"
-    force_basic_auth: yes
-    user: admin
-    password: "{{ jenkins_admin_password }}"
-    status_code: [201, 302]
+  when: jenkins_job_setup_changed
 
 - name: Run the pipeline build
   uri:
@@ -61,3 +43,4 @@
     user: admin
     password: "{{ jenkins_admin_password }}"
     status_code: [201]
+  when: jenkins_job_setup_changed

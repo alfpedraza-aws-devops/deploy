@@ -27,12 +27,14 @@
   yum:
     name: jenkins-2.220-1.1.noarch
     state: present
+  register: jenkins_package
 
 - name: Change the Jenkins JAVA options to avoid the setup wizard
   lineinfile:
     dest: /etc/sysconfig/jenkins
     regexp: ^JENKINS_JAVA_OPTIONS=
     line: JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
+  when: jenkins_package.changed
 
 - name: Start the Jenkins service
   service:

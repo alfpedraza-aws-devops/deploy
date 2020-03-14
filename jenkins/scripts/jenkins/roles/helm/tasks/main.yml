@@ -1,10 +1,16 @@
 ---
 # Install the Helm command line tool
 
+- name: Check if helm is already installed
+  stat:
+    path: /usr/local/bin/helm
+  register: helm_binary
+
 - name: Create a temporal folder to download the helm tar file
   file:
     path: /tmp/aws-devops/helm
     state: directory
+  when: helm_binary.stat.exists == false
 
 - name: Download the helm tar file and unzip it 
   unarchive:
