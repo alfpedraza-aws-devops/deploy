@@ -1,0 +1,12 @@
+apiVersion: v1
+entries:
+  cluster-autoscaler:
+  - apiVersion: v1
+    created: 2020-03-14T19:31:12.583421405Z
+    description: A Helm chart for the Cluster Autoscaler service
+    digest: 59e43b8890d68d07b645efe51375ad5167747bd48752c61e1a2d6b30e16355da
+    name: cluster-autoscaler
+    urls:
+    - https://alfpedraza-aws-devops.github.io/infrastructure/helm-repository/cluster-autoscaler-0.1.0.tgz
+    version: 0.1.0
+generated: 2020-03-14T19:31:12.582944085Z
