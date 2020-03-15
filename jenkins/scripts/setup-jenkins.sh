@@ -17,16 +17,4 @@ ansible-pull \
     jenkins/scripts/jenkins/site.yml \
     --extra-vars "jenkins_job_name=$PROJECT_NAME aws_account_id=$ACCOUNT_ID aws_region_name=$REGION_NAME aws_bucket_name=$BUCKET_NAME aws_ecr_url=$ECR_URL"
 
-ansible-pull \
-    -U https://github.com/alfpedraza-aws-devops/infrastructure.git \
-    -i jenkins/scripts/jenkins/inventory.yml \
-    jenkins/scripts/jenkins/site.yml \
-    --extra-vars "jenkins_job_name=$PROJECT_NAME aws_account_id=$ACCOUNT_ID aws_region_name=$REGION_NAME aws_bucket_name=$BUCKET_NAME aws_ecr_url=$ECR_URL"
-
-ansible-pull \
-    -U https://github.com/alfpedraza-aws-devops/infrastructure.git \
-    -i jenkins/scripts/jenkins/inventory.yml \
-    jenkins/scripts/jenkins/site.yml \
-    --extra-vars "jenkins_job_name=$PROJECT_NAME aws_account_id=$ACCOUNT_ID aws_region_name=$REGION_NAME aws_bucket_name=$BUCKET_NAME aws_ecr_url=$ECR_URL"
-
 echo "Success!"
