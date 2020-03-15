@@ -80,12 +80,104 @@
       jenkins_git_plugin.changed or jenkins_job_dsl_plugin.changed or
       jenkins_wfa_plugin.changed or jenkins_wfc_plugin.changed
 
+- name: Store the status of the job setup task
+  set_fact: any_jenkins_plugin_changed2=(jenkins_git_plugin.changed or jenkins_job_dsl_plugin.changed or jenkins_wfa_plugin.changed or jenkins_wfc_plugin.changed)
+
+- name: Store the status of the job setup task
+  set_fact:
+    any_jenkins_plugin_changed3: (jenkins_git_plugin.changed or jenkins_job_dsl_plugin.changed or jenkins_wfa_plugin.changed or jenkins_wfc_plugin.changed)
+
+- name: Store the status of the job setup task
+  set_fact:
+    any_jenkins_plugin_changed4: (jenkins_git_plugin.changed or
+      jenkins_job_dsl_plugin.changed or
+      jenkins_wfa_plugin.changed or
+      jenkins_wfc_plugin.changed)
+
+- name: Store the status of the job setup task
+  set_fact:
+    any_jenkins_plugin_changed5: jenkins_git_plugin.changed or
+      jenkins_job_dsl_plugin.changed or
+      jenkins_wfa_plugin.changed or
+      jenkins_wfc_plugin.changed
+
+- name: Store the status of the job setup task
+  set_fact:
+    any_jenkins_plugin_changed6: >
+      jenkins_git_plugin.changed or
+      jenkins_job_dsl_plugin.changed or
+      jenkins_wfa_plugin.changed or
+      jenkins_wfc_plugin.changed
+
+- name: Store the status of the job setup task
+  set_fact:
+    any_jenkins_plugin_changed7: >-
+      jenkins_git_plugin.changed or
+      jenkins_job_dsl_plugin.changed or
+      jenkins_wfa_plugin.changed or
+      jenkins_wfc_plugin.changed
+
+- name: Store the status of the job setup task
+  set_fact:
+    any_jenkins_plugin_changed8: |
+      jenkins_git_plugin.changed or
+      jenkins_job_dsl_plugin.changed or
+      jenkins_wfa_plugin.changed or
+      jenkins_wfc_plugin.changed
+
+- name: Store the status of the job setup task
+  set_fact:
+    any_jenkins_plugin_changed9: |-
+      jenkins_git_plugin.changed or
+      jenkins_job_dsl_plugin.changed or
+      jenkins_wfa_plugin.changed or
+      jenkins_wfc_plugin.changed
+
+- name: Store the status of the job setup task
+  set_fact: any_jenkins_plugin_changed10=jenkins_git_plugin.changed
+
+- name: Store the status of the job setup task
+  set_fact:
+    any_jenkins_plugin_changed11: jenkins_git_plugin.changed
+
+- name: Store the status of the job setup task
+  set_fact:
+    any_jenkins_plugin_changed12: >-
+      jenkins_git_plugin.changed
+
+
 - debug: var=jenkins_git_plugin.changed
 - debug: var=jenkins_job_dsl_plugin.changed
 - debug: var=jenkins_wfa_plugin.changed
 - debug: var=jenkins_wfc_plugin.changed
-- debug: msg="variable type {{ any_jenkins_plugin_changed | type_debug }}"
+- debug: var=any_jenkins_plugin_changed
+- debug: var=any_jenkins_plugin_changed2
+- debug: var=any_jenkins_plugin_changed3
+- debug: var=any_jenkins_plugin_changed4
+- debug: var=any_jenkins_plugin_changed5
+- debug: var=any_jenkins_plugin_changed6
+- debug: var=any_jenkins_plugin_changed7
+- debug: var=any_jenkins_plugin_changed8
+- debug: var=any_jenkins_plugin_changed9
+- debug: var=any_jenkins_plugin_changed10
+- debug: var=any_jenkins_plugin_changed11
+- debug: var=any_jenkins_plugin_changed12
 - debug: msg="variable type {{ jenkins_git_plugin.changed | type_debug }}"
+- debug: msg="variable type {{ jenkins_job_dsl_plugin.changed | type_debug }}"
+- debug: msg="variable type {{ jenkins_wfa_plugin.changed | type_debug }}"
+- debug: msg="variable type {{ jenkins_wfc_plugin.changed | type_debug }}"
+- debug: msg="variable type {{ any_jenkins_plugin_changed | type_debug }}"
+- debug: msg="variable type {{ any_jenkins_plugin_changed2 | type_debug }}"
+- debug: msg="variable type {{ any_jenkins_plugin_changed3 | type_debug }}"
+- debug: msg="variable type {{ any_jenkins_plugin_changed4 | type_debug }}"
+- debug: msg="variable type {{ any_jenkins_plugin_changed5 | type_debug }}"
+- debug: msg="variable type {{ any_jenkins_plugin_changed6 | type_debug }}"
+- debug: msg="variable type {{ any_jenkins_plugin_changed7 | type_debug }}"
+- debug: msg="variable type {{ any_jenkins_plugin_changed8 | type_debug }}"
+- debug: msg="variable type {{ any_jenkins_plugin_changed9 | type_debug }}"
+- debug: msg="variable type {{ any_jenkins_plugin_changed10 | type_debug }}"
+- debug: msg="variable type {{ any_jenkins_plugin_changed11 | type_debug }}"
+- debug: msg="variable type {{ any_jenkins_plugin_changed12 | type_debug }}"
 
 
 - name: Wait for plugins to be installed
