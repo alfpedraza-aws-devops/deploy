@@ -92,11 +92,11 @@
   until: "'Pending' not in plugin_status.json.data.jobs|map(attribute='installStatus')"
   retries: 30
   delay: 10
-  when: any_jenkins_plugin_changed
+  when: any_jenkins_plugin_changed == true
 
 - name: Restart the Jenkins service to apply all the changes
   service:
     name: jenkins
     enabled: yes
     state: restarted
-  when: any_jenkins_plugin_changed
+  when: any_jenkins_plugin_changed == true
