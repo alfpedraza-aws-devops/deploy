@@ -73,7 +73,7 @@
     password: "{{ jenkins_admin_password }}"
     status_code: [200]
   register: jenkins_job_deleted
-  when: jenkins_job.status == 200 and jenkins_job.content != "{{ lookup('template', 'templates/job-config.xml.j2') }}"
+  when: jenkins_job.status == 200 and jenkins_job.content != lookup('template', 'templates/job-config.xml.j2')
 
 - name: Create the Jenkins job
   uri:
