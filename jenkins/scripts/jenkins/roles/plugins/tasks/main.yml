@@ -85,7 +85,7 @@
     return_content: yes
     body_format: json
   register: plugin_status
-  until: "('Pending' not in plugin_status.json.data.jobs|map(attribute='installStatus')) and ('Installing' not in plugin_status.json.data.jobs|map(attribute='installStatus')"
+  until: "('Pending' not in plugin_status.json.data.jobs|map(attribute='installStatus')) and ('Installing' not in plugin_status.json.data.jobs|map(attribute='installStatus'))"
   retries: 30
   delay: 10
   when: any_jenkins_plugin_changed
