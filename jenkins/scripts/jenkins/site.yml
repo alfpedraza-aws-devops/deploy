@@ -4,12 +4,12 @@
   roles:
 
   # Install the tools required to build a pipeline
-  - common
-  - docker
-  - kubectl
-  - helm
-  - terraform
-  - aws
+  #- common
+  #- docker
+  #- kubectl
+  #- helm
+  #- terraform
+  #- aws
 
   # Install and setup the Jenkins package and plugins
   - initscripts
