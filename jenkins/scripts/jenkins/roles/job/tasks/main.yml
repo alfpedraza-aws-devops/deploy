@@ -87,6 +87,7 @@
     status_code: [200]
   register: jenkins_job_setup
   when: jenkins_job.status == 404 or jenkins_job_deleted.changed
+  changed_when: jenkins_job_setup.status == 200
 
 - name: Store the status of the job setup task
   set_fact:
