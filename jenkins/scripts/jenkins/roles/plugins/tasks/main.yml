@@ -77,8 +77,8 @@
 - name: Check if any plugin was updated
   set_fact:
     any_jenkins_plugin_changed: >-
-      jenkins_git_plugin.changed or jenkins_job_dsl_plugin.changed or
-      jenkins_wfa_plugin.changed or jenkins_wfc_plugin.changed
+      (jenkins_git_plugin.changed or jenkins_job_dsl_plugin.changed or
+      jenkins_wfa_plugin.changed or jenkins_wfc_plugin.changed)|bool
 
 - name: Wait for plugins to be installed
   uri:
