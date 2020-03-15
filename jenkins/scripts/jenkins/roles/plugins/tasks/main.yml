@@ -74,6 +74,20 @@
     append: yes
     state: present
 
+- name: Store the status of the job setup task
+  set_fact:
+    any_jenkins_plugin_changed: >-
+      jenkins_git_plugin.changed or jenkins_job_dsl_plugin.changed or
+      jenkins_wfa_plugin.changed or jenkins_wfc_plugin.changed
+
+- debug: var=jenkins_git_plugin.changed
+- debug: var=jenkins_job_dsl_plugin.changed
+- debug: var=jenkins_wfa_plugin.changed
+- debug: var=jenkins_wfc_plugin.changed
+- debug: msg="variable type {{ any_jenkins_plugin_changed | type_debug }}"
+- debug: msg="variable type {{ jenkins_git_plugin.changed | type_debug }}"
+
+
 - name: Wait for plugins to be installed
   uri:
     url: "http://localhost:8080/updateCenter/installStatus"
@@ -86,13 +100,11 @@
   until: "'Pending' not in plugin_status.json.data.jobs|map(attribute='installStatus')"
   retries: 30
   delay: 10
-  when: jenkins_git_plugin.changed or jenkins_job_dsl_plugin.changed or
-        jenkins_wfa_plugin.changed or jenkins_wfc_plugin.changed
+  when: any_jenkins_plugin_changed
 
 - name: Restart the Jenkins service to apply all the changes
   service:
     name: jenkins
     enabled: yes
     state: restarted
-  when: jenkins_git_plugin.changed or jenkins_job_dsl_plugin.changed or
-        jenkins_wfa_plugin.changed or jenkins_wfc_plugin.changed
+  when: any_jenkins_plugin_changed
