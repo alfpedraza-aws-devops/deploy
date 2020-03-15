@@ -44,7 +44,7 @@ resource "aws_route_table_association" "private_environment" {
 # Create the Network ACL for the private subnet to restrict access            #
 # ----------------------------------------------------------------------------#
 
-resource "aws_route_table" "private_environment" {
+resource "aws_network_acl" "private_environment" {
   vpc_id     = data.terraform_remote_state.vpc.outputs.vpc_id
   subnet_ids = [aws_subnet.private_environment.id]
 
