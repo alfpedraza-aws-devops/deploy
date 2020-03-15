@@ -90,4 +90,4 @@
 
 - name: Store the status of the job setup task
   set_fact:
-    jenkins_job_setup_changed: jenkins_job_setup.changed
+    jenkins_job_setup_changed: "{{ jenkins_job_setup.changed }}"
