@@ -6,9 +6,9 @@
   # Install the tools required to build a pipeline
   - common
   - docker
-  #- kubectl
-  #- helm
-  #- terraform
+  - kubectl
+  - helm
+  - terraform
   - aws
 
   # Install and setup the Jenkins package and plugins
