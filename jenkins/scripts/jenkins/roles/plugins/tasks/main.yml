@@ -193,19 +193,6 @@
 - debug: msg="variable type {{ any_jenkins_plugin_changed13 | type_debug }}"
 - debug: msg="variable type {{ any_jenkins_plugin_changed14 | type_debug }}"
 
-- name: Store the status of the job setup task
-  set_fact:
-    any_jenkins_plugin_changed15: >-
-    {{ 
-      jenkins_git_plugin.changed or
-      jenkins_job_dsl_plugin.changed or
-      jenkins_wfa_plugin.changed or
-      jenkins_wfc_plugin.changed
-     }}"
-
-- debug: var=any_jenkins_plugin_changed15
-- debug: msg="variable type {{ any_jenkins_plugin_changed15 | type_debug }}"
-
 - name: Wait for plugins to be installed
   uri:
     url: "http://localhost:8080/updateCenter/installStatus"
