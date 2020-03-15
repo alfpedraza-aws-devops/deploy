@@ -21,7 +21,7 @@
   until: python_jenkins_package is not failed
   retries: 5
 
-# Install the Jenkins job
+# Wait until the Jenkins service is up and running
 
 - name: Start the Jenkins service so the job can be created
   service:
@@ -44,17 +44,51 @@
   delay: 6
   when: jenkins_started.changed
 
-- name: Create a Jenkins job to run a pipeline
-  jenkins_job:
-    name: "{{ jenkins_job_name }}"
-    config: "{{ lookup('template', 'templates/job-config.xml.j2') }}"
+# Install the Jenkins job
+
+- name: Get the Jenkins crumb. Required to post data to the Jenkins server.
+  uri:
+    url: http://localhost:8080/crumbIssuer/api/json
+    force_basic_auth: yes
     user: admin
     password: "{{ jenkins_admin_password }}"
-    state: present
+    return_content: yes
+  register: jenkins_crumb
+
+- name: Check if the Jenkins job exists
+  uri:
+    url: "http://localhost:8080/job/{{ jenkins_job_name }}/config.xml"
+    force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
+    return_content: yes
+    status_code: [200, 404]
+  register: jenkins_job
+
+- name: Delete the job only if exists and its content is different
+  uri:
+    method: "DELETE"
+    headers: '{"{{ jenkins_crumb.json.crumbRequestField }}":"{{ jenkins_crumb.json.crumb }}","Cookie":"{{ jenkins_crumb.set_cookie }}"'
+    url: "http://localhost:8080/job/{{ jenkins_job_name }}"
+    force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
+    status_code: [200]
+  register: jenkins_job_deleted
+  when: jenkins_job.status == 200 and jenkins_job.content != "{{ lookup('template', 'templates/job-config.xml.j2') }}"
+
+- name: Create the Jenkins job
+  uri:
+    method: "POST"
+    headers: '{"{{ jenkins_crumb.json.crumbRequestField }}":"{{ jenkins_crumb.json.crumb }}","Cookie":"{{ jenkins_crumb.set_cookie }}","Content-Type":"text/xml"}'
+    url: "http://localhost:8080/createItem?name={{ jenkins_job_name }}"
+    body: "{{ lookup('template', 'templates/job-config.xml.j2') }}"
+    force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
+    status_code: [201]
   register: jenkins_job_setup
-  until: jenkins_job_setup is not failed
-  retries: 30
-  delay: 6
+  when: jenkins_job.status == 404 or jenkins_job_deleted.changed
 
 - name: Store the status of the job setup task
   set_fact:
