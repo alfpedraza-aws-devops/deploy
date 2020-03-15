@@ -39,3 +39,70 @@ resource "aws_route_table_association" "private_environment" {
   subnet_id      = aws_subnet.private_environment.id
   route_table_id = aws_route_table.private_environment.id
 }
+
+# ----------------------------------------------------------------------------#
+# Create the Network ACL for the private subnet to restrict access            #
+# ----------------------------------------------------------------------------#
+
+resource "aws_route_table" "private_environment" {
+  vpc_id     = data.terraform_remote_state.vpc.outputs.vpc_id
+  subnet_ids = [aws_subnet.private_environment.id]
+
+  ingress {
+    rule_no    = 100
+    protocol   = "tcp"
+    from_port  = 1024
+    to_port    = 65535
+    cidr_block = "0.0.0.0/0"
+    action     = "allow"
+  }
+
+  ingress {
+    rule_no    = 200
+    protocol   = "tcp"
+    from_port  = 0
+    to_port    = 65535
+    cidr_block = data.terraform_remote_state.vpc.outputs.public_subnet_cidr_block
+    action     = "allow"
+  }
+
+  ingress {
+    rule_no    = 300
+    protocol   = "tcp"
+    from_port  = 0
+    to_port    = 65535
+    cidr_block = data.terraform_remote_state.vpc.outputs.private_jenkins_subnet_cidr_block
+    action     = "allow"
+  }
+
+  egress {
+    rule_no    = 100
+    protocol   = "tcp"
+    from_port  = 1024
+    to_port    = 65535
+    cidr_block = "0.0.0.0/0"
+    action     = "allow"
+  }
+
+  egress {
+    rule_no    = 200
+    protocol   = "tcp"
+    from_port  = 32768
+    to_port    = 65535
+    cidr_block = data.terraform_remote_state.vpc.outputs.public_subnet_cidr_block
+    action     = "allow"
+  }
+
+  egress {
+    rule_no    = 300
+    protocol   = "tcp"
+    from_port  = 32768
+    to_port    = 65535
+    cidr_block = data.terraform_remote_state.vpc.outputs.private_jenkins_subnet_cidr_block
+    action     = "allow"
+  }
+
+  tags = merge(local.common_tags, map(
+    "Name", "${var.project_name}-private-${var.environment_name}"
+  ))
+}

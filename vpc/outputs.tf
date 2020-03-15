@@ -7,6 +7,11 @@ output "vpc_id" {
   description = "The id of the project VPC"
 }
 
+output "public_subnet_cidr_block" {
+  value       = var.public_subnet_cidr_block
+  description = "The CIDR block assigned to the private jenkins subnet"
+}
+
 output "private_jenkins_subnet_cidr_block" {
   value       = var.private_jenkins_subnet_cidr_block
   description = "The CIDR block assigned to the private jenkins subnet"
