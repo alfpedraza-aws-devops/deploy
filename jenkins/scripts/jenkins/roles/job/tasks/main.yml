@@ -71,7 +71,7 @@
     force_basic_auth: yes
     user: admin
     password: "{{ jenkins_admin_password }}"
-    status_code: [200]
+    status_code: [200, 302]
   register: jenkins_job_deleted
   when: jenkins_job.status == 200 and jenkins_job.content != lookup('template', 'templates/job-config.xml.j2')
 
