@@ -147,11 +147,11 @@
 
 - name: Store the status of the job setup task
   set_fact:
-    any_jenkins_plugin_changed13: "{{ jenkins_git_plugin.changed }}"|bool
+    any_jenkins_plugin_changed13: "{{ jenkins_git_plugin.changed }}"
 
 - name: Store the status of the job setup task
   set_fact:
-    any_jenkins_plugin_changed14: "{{ jenkins_git_plugin.changed or jenkins_job_dsl_plugin.changed or jenkins_wfa_plugin.changed or jenkins_wfc_plugin.changed }}"|bool
+    any_jenkins_plugin_changed14: "{{ jenkins_git_plugin.changed or jenkins_job_dsl_plugin.changed or jenkins_wfa_plugin.changed or jenkins_wfc_plugin.changed }}"
 
 
 
@@ -195,12 +195,13 @@
 
 - name: Store the status of the job setup task
   set_fact:
-    any_jenkins_plugin_changed15: {{ 
+    any_jenkins_plugin_changed15: >-
+    {{ 
       jenkins_git_plugin.changed or
       jenkins_job_dsl_plugin.changed or
       jenkins_wfa_plugin.changed or
       jenkins_wfc_plugin.changed
-     }}
+     }}"
 
 - debug: var=any_jenkins_plugin_changed15
 - debug: msg="variable type {{ any_jenkins_plugin_changed15 | type_debug }}"
