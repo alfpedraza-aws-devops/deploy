@@ -46,4 +46,4 @@
       password: "{{ jenkins_admin_password }}"
       status_code: [201]
 
-  when: jenkins_job_setup_changed == true
+  when: jenkins_job_setup_changed
