@@ -76,9 +76,9 @@
 
 - name: Check if any plugin was updated
   set_fact:
-    any_jenkins_plugin_changed: >-
-      (jenkins_git_plugin.changed or jenkins_job_dsl_plugin.changed or
-      jenkins_wfa_plugin.changed or jenkins_wfc_plugin.changed)|bool
+    any_jenkins_plugin_changed: >
+      jenkins_git_plugin.changed or jenkins_job_dsl_plugin.changed or
+      jenkins_wfa_plugin.changed or jenkins_wfc_plugin.changed
 
 - name: Wait for plugins to be installed
   uri:
@@ -92,11 +92,11 @@
   until: "'Pending' not in plugin_status.json.data.jobs|map(attribute='installStatus')"
   retries: 30
   delay: 10
-  when: any_jenkins_plugin_changed
+  when: any_jenkins_plugin_changed|bool
 
 - name: Restart the Jenkins service to apply all the changes
   service:
     name: jenkins
     enabled: yes
     state: restarted
-  when: any_jenkins_plugin_changed
+  when: any_jenkins_plugin_changed|bool
