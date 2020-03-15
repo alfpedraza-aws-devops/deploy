@@ -5,7 +5,7 @@
 
   # Install the tools required to build a pipeline
   - common
-  #- docker
+  - docker
   #- kubectl
   #- helm
   #- terraform
