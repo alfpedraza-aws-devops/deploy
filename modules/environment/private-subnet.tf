@@ -79,7 +79,7 @@ resource "aws_network_acl" "private_environment" {
     rule_no    = 100
     protocol   = "-1"
     from_port  = 0
-    to_port    = 65535
+    to_port    = 0
     cidr_block = "0.0.0.0/0"
     action     = "allow"
   }
