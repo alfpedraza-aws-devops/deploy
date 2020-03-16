@@ -117,6 +117,9 @@ resource "aws_security_group" "node" {
     cidr_blocks     = ["0.0.0.0/0"]
   }
 
+  lifecycle {
+    ignore_changes = [ingress]
+  }
   tags = merge(local.common_tags, map(
     "Name", "${var.project_name}-private-${var.environment_name}-node"
   ))
