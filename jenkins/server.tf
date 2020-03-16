@@ -34,6 +34,7 @@ resource "aws_instance" "jenkins" {
                            file("${path.module}/scripts/setup-jenkins.sh")])
 
   root_block_device {
+    volume_size = 16
     delete_on_termination = true
   }
   tags = merge(local.common_tags, map(
