@@ -90,9 +90,31 @@
   delay: 10
   when: any_jenkins_plugin_changed
 
-- name: Restart the Jenkins service to apply all the changes
-  service:
-    name: jenkins
-    enabled: yes
-    state: restarted
+#- name: Restart the Jenkins service to apply all the changes
+#  service:
+#    name: jenkins
+#    enabled: yes
+#    state: restarted
+#  when: any_jenkins_plugin_changed
+
+- name: Get the Jenkins crumb. Required to post data to the Jenkins server.
+  uri:
+    url: http://localhost:8080/crumbIssuer/api/json
+    force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
+    return_content: yes
+  register: jenkins_crumb
   when: any_jenkins_plugin_changed
+  
+- name: Restart Jenkins to activate new plugins when it's safe to do so
+  uri:
+    method: "POST"
+    headers: '{"{{ jenkins_crumb.json.crumbRequestField }}":"{{ jenkins_crumb.json.crumb }}","Cookie":"{{ jenkins_crumb.set_cookie }}"}'
+    url: "http://localhost:8080/safeRestart"
+    force_basic_auth: yes
+    user: admin
+    password: "{{ jenkins_admin_password }}"
+    status_code: [200, 302]
+  when: any_jenkins_plugin_changed
+  changed_when: true
