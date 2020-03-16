@@ -20,8 +20,6 @@
   retries: 30
   delay: 6
 
-- debug: var=jenkins_wait
-
 - name: Install the "git" Jenkins plugin. Required to checkout code
   jenkins_plugin:
     name: git
@@ -91,9 +89,6 @@
   retries: 30
   delay: 10
   when: any_jenkins_plugin_changed
-
-  
-- debug: var=plugin_status
 
 - name: Restart the Jenkins service to apply all the changes
   service:
