@@ -42,6 +42,10 @@
   retries: 30
   delay: 6
 
+- name: Wait 30 seconds so plugins can initialize.
+  wait_for:
+    timeout: 30
+
 # Install the Jenkins job
 
 - name: Get the Jenkins crumb. Required to post data to the Jenkins server.

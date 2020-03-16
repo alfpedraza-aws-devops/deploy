@@ -90,11 +90,6 @@
   delay: 10
   when: any_jenkins_plugin_changed
 
-- name: Wait 30 seconds before restarting the server
-  wait_for:
-    timeout: 30
-  when: any_jenkins_plugin_changed
-
 - name: Restart the Jenkins service to apply all the changes
   service:
     name: jenkins
