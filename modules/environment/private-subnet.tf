@@ -77,28 +77,10 @@ resource "aws_network_acl" "private_environment" {
 
   egress {
     rule_no    = 100
-    protocol   = "tcp"
-    from_port  = 1024
+    protocol   = "-1"
+    from_port  = 0
     to_port    = 65535
     cidr_block = "0.0.0.0/0"
-    action     = "allow"
-  }
-
-  egress {
-    rule_no    = 200
-    protocol   = "tcp"
-    from_port  = 32768
-    to_port    = 65535
-    cidr_block = data.terraform_remote_state.vpc.outputs.public_subnet_cidr_block
-    action     = "allow"
-  }
-
-  egress {
-    rule_no    = 300
-    protocol   = "tcp"
-    from_port  = 32768
-    to_port    = 65535
-    cidr_block = data.terraform_remote_state.vpc.outputs.private_jenkins_subnet_cidr_block
     action     = "allow"
   }
 
