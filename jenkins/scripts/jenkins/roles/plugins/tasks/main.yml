@@ -89,6 +89,8 @@
   retries: 30
   delay: 10
 
+- debug: var=plugin_status
+
 - name: Restart the Jenkins service to apply all the changes
   service:
     name: jenkins
