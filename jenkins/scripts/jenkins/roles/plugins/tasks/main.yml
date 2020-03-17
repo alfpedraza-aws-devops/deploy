@@ -85,7 +85,7 @@
     return_content: yes
     body_format: json
   register: plugin_status
-  until: "('Pending' not in plugin_status.json.data.jobs|map(attribute='installStatus')) and ('Installing' not in plugin_status.json.data.jobs|map(attribute='installStatus'))"
+  until: "(plugin_status.content.find('\\\"git\\\"') != -1) and (plugin_status.content.find('\\\"job-dsl\\\"') != -1) and (plugin_status.content.find('\\\"workflow-aggregator\\\"') != -1) and (plugin_status.content.find('\\\"workflow-cps\\\"') != -1) and ('Pending' not in plugin_status.json.data.jobs|map(attribute='installStatus')) and ('Installing' not in plugin_status.json.data.jobs|map(attribute='installStatus'))"
   retries: 30
   delay: 10
 
