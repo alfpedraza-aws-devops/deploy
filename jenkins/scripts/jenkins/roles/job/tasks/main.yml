@@ -42,7 +42,6 @@
   retries: 30
   delay: 6
 
-##################################
 - name: Wait for plugins to be installed
   uri:
     url: "http://localhost:8080/updateCenter/installStatus"
@@ -55,9 +54,6 @@
   until: "('Pending' not in plugin_status2.json.data.jobs|map(attribute='installStatus')) and ('Installing' not in plugin_status2.json.data.jobs|map(attribute='installStatus'))"
   retries: 30
   delay: 10
-
-- debug: var=plugin_status2
-###################################
 
 # Install the Jenkins job
 

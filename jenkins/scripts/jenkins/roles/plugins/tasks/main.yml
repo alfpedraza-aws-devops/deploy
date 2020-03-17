@@ -20,23 +20,6 @@
   retries: 30
   delay: 6
 
-##################################
-- name: Wait for plugins to be installed
-  uri:
-    url: "http://localhost:8080/updateCenter/installStatus"
-    force_basic_auth: yes
-    user: admin
-    password: "{{ jenkins_admin_password }}"
-    return_content: yes
-    body_format: json
-  register: plugin_status2
-  until: "('Pending' not in plugin_status2.json.data.jobs|map(attribute='installStatus')) and ('Installing' not in plugin_status2.json.data.jobs|map(attribute='installStatus'))"
-  retries: 30
-  delay: 10
-
-- debug: var=plugin_status2
-###################################
-
 - name: Install the "git" Jenkins plugin. Required to checkout code
   jenkins_plugin:
     name: git
@@ -105,8 +88,6 @@
   until: "('Pending' not in plugin_status.json.data.jobs|map(attribute='installStatus')) and ('Installing' not in plugin_status.json.data.jobs|map(attribute='installStatus'))"
   retries: 30
   delay: 10
-
-- debug: var=plugin_status
 
 - name: Restart the Jenkins service to apply all the changes
   service:
